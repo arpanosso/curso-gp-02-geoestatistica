@@ -64,16 +64,128 @@ Comparação de seus respectivos gráficos de contornos (padrões espaciais).
 
 Assim, podemos entender a geoestatística como estudos de fenômenos que variam no espaço e/ou no tempo, ou seja, é uma coleção de técnicas numéricas, que lidam com a caracterização de atributos espaciais, permitindo a descrição da continuidade espacial de fenômenos naturais e fornece adaptações das técnicas da regressão para o entendimento desta continuidade (ISAAKS; SRIVASTAVA, 1989; GOOVAERTS 1997). 
 
-Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas incluindo as ciências do solo, geosfísica, hidrologia e engenharia ambiental. A parte central da geoestatística é a ideia de que **medidas mais próximas tendem a serem mais parecidas do que valores observados em locais distantes**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (GOTWAY; HARTFORD).
+Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas incluindo geosfísica, ciências agronômicas, hidrologia e engenharia ambiental. A parte central da geoestatística é a ideia de que **medidas mais próximas tendem a serem mais parecidas do que valores observados em locais distantes**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (GOTWAY; HARTFORD).
 
 
-## 
+## O variograma 
+
+O variograma (ou semivariograma) é uma estatística descritiva quantitativa que pode ser representada graficamente de tal forma que caracteriza a continuidade espacial de um conjunto de dados.
+
+![](img/img-03.png)
+
+## Descrição do Experimento
+
+Para esse estudo, as áreas selecionadas pertencem à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+
+![](img/img-04.png)
+
+No seu histórico, as áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de 1970, quando, em 1978, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até 1986. Durante os anos de 1986-1987, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de 1986 e a área de SI foi formada em dezembro de 1987.
+
+No momento da realização das avaliações de emissão de CO~2~ do solo (FCO2) as áreas já haviam passado por mais de $30$ anos de mudança de conversão. As determinações foram realizadas no período de 03 de fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
+
+Ao final do período de determinação da emissão de CO~2~ do solo, as amostras de solo foram coletadas e todos os atributos físicos e químicos foram determinados.
+
+![](img/img-05.png)
+
+Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto (EU), ano de 2017, Município de Selvíria, Mato Grosso do Sul.
+
+![](img/img-06.png)
+
+## Análise Exploratória
+
+Um estudo clássico de geoestatística normalmente começa com uma descrição detalhada da análise exploratória dos dados (mapas espaciais, histogramas). Para isso vamos realizas análise descritiva da variável emissão de CO~2~ do solo na área de eucalipto. ([OLIVEIRA, 2018](https://repositorio.unesp.br/bitstreams/a13ca7aa-da94-4701-89aa-2bd2c8b4442d/download) )
+
+
+### Carregando os pacotes necessário
+
+```{r}
+library(tidyverse)
+library(sp)
+library(gstat)
+```
+
+### Ler o banco de dados
+
+```{r}
+geo_fco2 <- read_rds("data/geo_fco2.rds")
+glimpse(geo_fco2)
+skimr::skim(geo_fco2)
+```
+
+### Recorte do banco de dados, selecionar somente a área de eucalipto.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU")
+```
+
+### Apresente o gradeado experimental.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(x,y)) + 
+  geom_point() +
+  theme_bw()
+```
+### Mapeie a emissão de CO~2~ com o tamanho e a cor dos pontos.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(x, y, size = fco2,
+             color = fco2)) + 
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+```
+
+### Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  summarise(
+    N = n(),
+    Media = mean(fco2),
+    Mediana = median(fco2),
+    Minimo = min(fco2),
+    Maximo = max(fco2),
+    Variancia = var(fco2),
+    Desv_Pad = sd(fco2),
+    Assimetria = agricolae::skewness(fco2),
+    Curtose = agricolae::kurtosis(fco2),
+    CV = 100*Desv_Pad/Media
+  )
+```
+```{r}
+my_func <- function(x){
+  media <- mean(x)
+  vari <- var(x)
+  c(MEDIA = media, VARIANCIA = vari)
+}
+
+geo_fco2 %>% 
+  summarise(
+    across(
+      fco2:k,my_func)) 
+
+```
+
 
 ## Referências
-
 
 GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for incorporating auxiliary information in the prediction of spatial variables. **J. Agric., Biol. Environ. Statis.**, 1: 17-39.
 
 GOOVAERTS, P. **Geostatistics for natural resources evaluation**. New York: Oxford University Press, p. 483, 1997.
 
 ISAAKS, E. H.; SRIVASTAVA, R. M. **Applied geostatistics**. Nova York: Oxford University Press, 1989. 561 p.
+
+JOURNEL, A.G. **Fundamentals of geostatistics in five lessons**. Short Course in Geology: Volume 8. American Geophysical Union, Washington, p. 1 – 40, 1989.
+
+OLIVEIRA, C. F. **Variabilidade espacial da emissão de CO2 e estoque de carbono do solo em áreas de eucalipto e sistema silvipastoril**. Dissertação de Mestrado, Agronomia, UNESP-FEIS, 2018.
+
+VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do solo**. In: NOVAIS, R.F.; ALVAREZ, V. H.; SEHAFFER, C. E. G. R. (Ed). Tópicos em ciência do solo. Viçosa: Sociedade Brasileira de Ciência do Solo, 2000, v.1, p. 1 – 53. 
+
+WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**. San Francisco: John Wiley & Sons, p. 315, 2009.
+
