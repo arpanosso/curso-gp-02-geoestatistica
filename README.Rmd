@@ -73,6 +73,8 @@ O variograma (ou semivariograma) é uma estatística descritiva quantitativa que
 
 ![](img/img-03.png)
 
+Em outras palavras, a análise variográfica caracteriza a (auto) correlação espacial.
+
 ## Descrição do Experimento
 
 Para esse estudo, as áreas selecionadas pertencem à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
@@ -96,7 +98,7 @@ Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto (EU), ano d
 Um estudo clássico de geoestatística normalmente começa com uma descrição detalhada da análise exploratória dos dados (mapas espaciais, histogramas). Para isso vamos realizas análise descritiva da variável emissão de CO~2~ do solo na área de eucalipto. ([OLIVEIRA, 2018](https://repositorio.unesp.br/bitstreams/a13ca7aa-da94-4701-89aa-2bd2c8b4442d/download) )
 
 
-### Carregando os pacotes necessário
+### 1) Carregue os pacotes necessários para as analises
 
 ```{r}
 library(tidyverse)
@@ -104,7 +106,7 @@ library(sp)
 library(gstat)
 ```
 
-### Ler o banco de dados
+### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções glimpse e skim para um resumo inicial.
 
 ```{r}
 geo_fco2 <- read_rds("data/geo_fco2.rds")
@@ -112,14 +114,16 @@ glimpse(geo_fco2)
 skimr::skim(geo_fco2)
 ```
 
-### Recorte do banco de dados, selecionar somente a área de eucalipto.
+### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
+
+### 4) Recorte do banco de dados, selecionar somente a área de eucalipto.
 
 ```{r}
 geo_fco2 %>% 
   filter(tratamento == "EU")
 ```
 
-### Apresente o gradeado experimental.
+### 5) Apresente o gradeado amostral.
 
 ```{r}
 geo_fco2 %>% 
@@ -128,19 +132,22 @@ geo_fco2 %>%
   geom_point() +
   theme_bw()
 ```
-### Mapeie a emissão de CO~2~ com o tamanho e a cor dos pontos.
+Observe a disposição dos pontos amostrais.
+
+### 6) Mapeie a emissão de CO~2~ pelo tamanho e a cor dos marcadores de pontos.
 
 ```{r}
 geo_fco2 %>% 
   filter(tratamento == "EU") %>% 
-  ggplot(aes(x, y, size = fco2,
-             color = fco2)) + 
+  mutate(fco2_class = cut(fco2, 5)) %>% 
+  ggplot(aes(x, y, size = fco2_class,
+             color = fco2_class)) + 
   geom_point() +
   theme_bw() +
-  scale_color_viridis_c()
+  scale_color_brewer(palette = "Oranges")
 ```
 
-### Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
+### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
 ```{r}
 geo_fco2 %>% 
@@ -158,20 +165,83 @@ geo_fco2 %>%
     CV = 100*Desv_Pad/Media
   )
 ```
+
+### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summary` e `across`.
+
 ```{r}
 my_func <- function(x){
   media <- mean(x)
   vari <- var(x)
-  c(MEDIA = media, VARIANCIA = vari)
+  c(`MEDIA` = media, `VARIANCIA` = vari)
 }
 
 geo_fco2 %>% 
   summarise(
     across(
-      fco2:k,my_func)) 
+      fco2:k,my_func))
+
+```
+## Premissas ou pressupostos da análise geoestatística.
+
+A análise geoestatística é baseada na teoria das **variáveis regionalizadas**, que é uma função numérica com distribuição espacial, que varia de um ponto a outro com continuidade aparente, mas cujas variações não podem ser representadas por uma função matemática simples (MATHERON, 1963). 
+
+Uma variável regionalizada é uma variável aleatória que assume diferentes valores, de acordo com a sua posição na área de estudo.
+
+Se todos os valores de uma variável regionalizada forem considerados em todos os pontos dentro de uma área amostral, a variável regionalizada é apenas uma de infinitas variáveis aleatórias. 
+
+Esse conjunto é chamado de **função aleatória** e é simbolizado por $Z(x_i)$. Na prática, quando retiramos uma amostra de solo em um local com coordenadas definidas, temos apenas uma única realização da função aleatória. 
+
+Para estimar valores em locais não amostrados, devemos introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
+
+Em resumo, temos que os métodos geoestatísticos são ótimos quando os dados são:
+	
+> **normalmente distribuídos** estacionários (média e variância não variam significativamente no espaço).
+
+Desvios significativos da normalidade e da estacionariedade podem causar problemas, portanto é sempre importante começar o estudo dando uma olhada no histograma ou algum gráfico similar para checar a normalidade e o mapa dos valores no espaço para checar uma tendência significativa. 
+
+
+### 9) Crie o histograma da variável `fco2`.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(x=fco2)) +
+  geom_histogram(bins=10)
 
 ```
 
+### 10) No histograma anterior, adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil`.
+
+```{r}
+
+```
+
+
+### 11) Realize o teste de normalidade dos dados para `fco2`.
+
+### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(x=x, y=fco2)) +
+  geom_point()
+```
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(x=y, y=fco2)) +
+  geom_point()
+```
+
+### 13) Realize de análise de regressão linear entre fco2 e as coordenadas x e y.
+```{r}
+lm(fco2 ~ y,
+   data = geo_fco2 %>% 
+  filter(tratamento == "EU")) %>% 
+  summary.lm()
+```
 
 ## Referências
 
@@ -182,6 +252,8 @@ GOOVAERTS, P. **Geostatistics for natural resources evaluation**. New York: Oxfo
 ISAAKS, E. H.; SRIVASTAVA, R. M. **Applied geostatistics**. Nova York: Oxford University Press, 1989. 561 p.
 
 JOURNEL, A.G. **Fundamentals of geostatistics in five lessons**. Short Course in Geology: Volume 8. American Geophysical Union, Washington, p. 1 – 40, 1989.
+
+MATHERON G. Principles of geostatistics. **Economic Geology**, 58, 1963, 1246-1266.
 
 OLIVEIRA, C. F. **Variabilidade espacial da emissão de CO2 e estoque de carbono do solo em áreas de eucalipto e sistema silvipastoril**. Dissertação de Mestrado, Agronomia, UNESP-FEIS, 2018.
 
