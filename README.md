@@ -286,13 +286,9 @@ distância $h$.
 
 #### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que:
 
-$$
-D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}
-$$ e
+$$D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}$$ e
 
-$$
-\gamma = \left[ z(x_i) -z(x_i + h)\right]^2
-$$
+$$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$
 
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
