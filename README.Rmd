@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   warning = FALSE, 
   error = FALSE, 
   message = FALSE,
+  echo = FALSE, eval = FALSE,
   comment = "#>"
 )
 ```
@@ -104,6 +105,7 @@ Um estudo clássico de geoestatística normalmente começa com uma descrição d
 library(tidyverse)
 library(sp)
 library(gstat)
+library(corrplot)
 ```
 
 ### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções glimpse e skim para um resumo inicial.
@@ -191,16 +193,16 @@ Se todos os valores de uma variável regionalizada forem considerados em todos o
 
 Esse conjunto é chamado de **função aleatória** e é simbolizado por $Z(x_i)$. Na prática, quando retiramos uma amostra de solo em um local com coordenadas definidas, temos apenas uma única realização da função aleatória. 
 
-Para estimar valores em locais não amostrados, devemos introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
+Para estimar valores em locais não amostrados, deve-se introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
 
 Em resumo, temos que os métodos geoestatísticos são ótimos quando os dados são:
 	
 > **normalmente distribuídos** estacionários (média e variância não variam significativamente no espaço).
 
-Desvios significativos da normalidade e da estacionariedade podem causar problemas, portanto é sempre importante começar o estudo dando uma olhada no histograma ou algum gráfico similar para checar a normalidade e o mapa dos valores no espaço para checar uma tendência significativa. 
+Desvios significativos da normalidade e da estacionariedade podem causar problemas, portanto é sempre importante começar o estudo estudando o histograma ou algum gráfico similar para checar a normalidade e o mapa dos valores no espaço para checar uma tendência significativa. 
 
 
-### 9) Crie o histograma da variável `fco2`.
+### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil`
 
 ```{r}
 geo_fco2 %>% 
@@ -210,12 +212,15 @@ geo_fco2 %>%
 
 ```
 
-### 10) No histograma anterior, adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil`.
+### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
 
 ```{r}
-
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  ggplot(aes(sample=fco2)) +
+  stat_qq() +
+  stat_qq_line()
 ```
-
 
 ### 11) Realize o teste de normalidade dos dados para `fco2`.
 
@@ -235,12 +240,165 @@ geo_fco2 %>%
   geom_point()
 ```
 
-### 13) Realize de análise de regressão linear entre fco2 e as coordenadas x e y.
+### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
 ```{r}
-lm(fco2 ~ y,
-   data = geo_fco2 %>% 
-  filter(tratamento == "EU")) %>% 
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  mutate(
+    y2 = y*y,
+    x2 = x*x
+  ) %>% 
+  lm(fco2 ~ y + y2 + x + x2, data=.) %>% 
   summary.lm()
+```
+
+## Medidas da dispersão conjunta de duas variáveis X e Y
+
+As medidas de dispersão conjunta de duas variáveis, como X e Y, referem-se à extensão em que os valores dessas variáveis se afastam de seus valores médios simultaneamente. Algumas medidas comuns incluem a covariância e a correlação.
+
+###  Covariância
+
+A covariância $(Cov)$ indica a direção da relação linear entre duas variáveis. Se for positiva, sugere uma relação positiva (quando uma variável aumenta, a outra também tende a aumentar); se for negativa, indica uma relação negativa (uma variável aumenta enquanto a outra diminui).
+
+
+Onde $X_i$ e $Y_i$ são os valores individuais das variáveis $X$ e $Y$, $\bar{X}$ e $\bar{Y}$ são as médias de $X$ e $Y$, e $n$ é o número de observações.
+
+$$
+Cov(X,Y) = \frac{1}{n}\sum\limits_{i=1}^n(X_i - \bar{X})(Y_i - \bar{Y})
+$$
+
+### Correlação
+
+A correlação $(r)$ normaliza a covariância para estar entre $-1$ e $1$, facilitando a interpretação. Um valor próximo de $1$ indica uma forte relação positiva, $-1$ indica uma forte relação negativa, e $0$ indica ausência de relação linear.
+
+
+Onde $S_X^2$ e $S_y^2$ são as variâncias de $X$ e $Y$, respectivamente.
+
+### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
+
+```{r}
+geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  select(fco2:k) %>% 
+  cor() %>% 
+  corrplot::corrplot(method = "ellipse",type = "upper")
+```
+## Definições em geoestatística
+
+> Geoestatística lida com dados autocorrelacionados espacialmente.
+
+
+> Autocorrelação: correlação entre elementos de uma série  com outros elementos da mesma série separados por uma uma determinada distância. (Oxford American Dictionary)
+
+Covariância e a correlação são medidas de similaridade entre duas variáveis. Para estender este conceito para medidas de similaridade espacial, considere um gráfico de dispersão em que os pares de dados representam medidas da mesma variável separadas por uma distância $h$ uma da outra. Esta distância é geralmente denominada de `lag`, como usado nas series temporais.
+
+
+![](img/img-07.png)
+
+## O semivariograma experimental (variograma experimental)
+
+Ao contrário das funções de covariância e correlação, as quais medem a similaridade, o semivariograma experimental $\gamma(h)$ mede dissimilaridade média entre dados separados por um vetor $h$, ou seja,
+
+$$
+\gamma(h) = \frac{1}{2N(h)} \sum \limits_{i=1}^{N(h)}\left[ z(x_i) -z(x_i + h)\right]^2
+$$
+
+Sendo $z(x_i)$ e $z(x_i + h)$ os valores de cauda e da cabeça, respectivamente e $N(h)$ o número de pares de pontos separados pela distância $h$.
+
+### 15) Vamos construir um semivariograma experimental:
+
+#### 15.1) Extraia os vetores `x`, `y` e `z`.
+
+```{r}
+x <- geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  pull(x)
+
+y <- geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  pull(y)
+
+z <- geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  pull(fco2)
+```
+
+#### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
+
+
+```{r}
+m_dist <- matrix(0,ncol = 102, nrow = 102)
+m_2gamma <- m_dist
+```
+
+#### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que:
+
+$$
+D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}
+$$
+e
+
+$$
+\gamma = \left[ z(x_i) -z(x_i + h)\right]^2
+$$
+
+```{r}
+for(i in 1:102){
+  for( j in 1:102){
+    m_dist[i,j] = sqrt((x[i]-x[j])^2+(y[i]-y[j])^2)
+    m_2gamma[i,j] = 1/2*(z[i]-z[j])^2
+  }
+}
+table(m_dist) %>% plot()
+abline(h=30)
+```
+
+#### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
+
+```{r}
+lag = 5
+active_lag_distance = 50
+h <- seq(5,active_lag_distance,lag)
+n_h <- gamma <- h
+for( i in seq_along(h)){
+  if(i == 1){
+    filtro <- m_dist > 0 & m_dist <= h[i]
+    n_h[i] <- sum(filtro)/2
+    gamma[i] <- sum(m_2gamma[filtro])/n_h[i]/2
+  }else{
+    filtro <- m_dist > h[i-1] & m_dist <= h[i]
+    n_h[i] <- sum(filtro)/2
+    gamma[i] <- sum(m_2gamma[filtro])/n_h[i]/2
+  }
+}
+```
+
+#### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
+```{r}
+tibble(n_h, h,gamma) %>% 
+  ggplot(aes(x=h,y=gamma)) +
+  geom_point() +
+  theme_bw()
+```
+
+
+
+
+
+```{r}
+df_aux <- geo_fco2 %>% 
+  filter(tratamento == "EU") %>% 
+  select(x,y,fco2) %>% 
+  rename(z=fco2)
+```
+
+```{r}
+coordinates(df_aux) = ~ x + y
+formula <- z ~ 1
+variograma <- variogram(formula,df_aux)
+variograma %>% 
+  ggplot(aes(x=dist, y=gamma)) +
+  geom_point()
 ```
 
 ## Referências
