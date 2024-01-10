@@ -15,9 +15,9 @@ A Geoestatística é uma ferramenta na análise espacial de dados,
 desempenhando um importante papel na agricultura moderna. Ela combina
 princípios estatísticos com informações geográficas para fornecer uma
 compreensão mais profunda da variabilidade espacial de várias variáveis
-ligados ao solo, à planta e mesmo à atmosfera.
+ligadas ao solo, às plantas e mesmo à atmosfera.
 
-Definida como um ramo da estatística aplicada que lida com a análise e
+É definida como um ramo da estatística aplicada que lida com a análise e
 interpretação de dados espaciais. Ela permite a modelagem da
 variabilidade espacial de fenômenos, descrevendo padrões espaciais,
 correlações e distribuições geográficas. No contexto agronômico, é uma
@@ -75,12 +75,12 @@ semelhantes.
 
 ## Definição da Geoestatística
 
-Assim, podemos entender a geoestatística como estudos de fenômenos que
-variam no espaço e/ou no tempo, ou seja, é uma coleção de técnicas
-numéricas, que lidam com a caracterização de atributos espaciais,
-permitindo a descrição da continuidade espacial de fenômenos naturais e
-fornece adaptações das técnicas da regressão para o entendimento desta
-continuidade (ISAAKS; SRIVASTAVA, 1989; GOOVAERTS 1997).
+Podemos entender a geoestatística como estudos de fenômenos que variam
+no espaço e/ou no tempo, ou seja, é uma coleção de técnicas numéricas,
+que lidam com a caracterização de atributos espaciais, permitindo a
+descrição da continuidade espacial de fenômenos naturais e fornece
+adaptações das técnicas da regressão para o entendimento desta
+continuidade (ISAAKS; SRIVASTAVA, 1989; GOOVAERTS, 1997).
 
 Embora ela tenha sua origem na mineração, a geoestatística é uma parte
 básica de muitas disciplinas científicas incluindo geosfísica, ciências
@@ -98,15 +98,15 @@ caracteriza a continuidade espacial de um conjunto de dados.
 
 ![](img/img-03.png)
 
-Em outras palavras, a análise variográfica caracteriza a (auto)
-correlação espacial.
+Em outras palavras, a análise variográfica caracteriza a
+(auto)correlação espacial.
 
 ## Descrição do Experimento
 
-Para esse estudo, as áreas selecionadas pertencem à Fazenda de Ensino,
-Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira
-(FEIS - UNESP), localizada no município de Selvíria, estado do Mato
-Grosso do Sul.
+Para esse cruso foi selecionado um estudo desenvolvido em áreas
+pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da
+Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no
+município de Selvíria, estado do Mato Grosso do Sul.
 
 ![](img/img-04.png)
 
@@ -128,11 +128,11 @@ fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os
 dias de avaliação e os valores de precipitação (chuva em mm) ocorridas
 no período.
 
+![](img/img-05.png)
+
 Ao final do período de determinação da emissão de CO<sub>2</sub> do
 solo, as amostras de solo foram coletadas e todos os atributos físicos e
 químicos foram determinados.
-
-![](img/img-05.png)
 
 Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto
 (EU), ano de 2017, Município de Selvíria, Mato Grosso do Sul.
@@ -150,11 +150,11 @@ emissão de CO<sub>2</sub> do solo na área de eucalipto. ([OLIVEIRA,
 
 ### 1) Carregue os pacotes necessários para as analises
 
-### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções glimpse e skim para um resumo inicial.
+### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções `glimpse` e `skim`, dos pacotes `{dplyr}` e `{skimr}` para a apresentação de um resumo inicial do banco de dados.
 
 ### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
 
-### 4) Recorte do banco de dados, selecionar somente a área de eucalipto.
+### 4) Filtrar do banco de dados, selecionar somente as observações referentes à área de eucalipto.
 
 ### 5) Apresente o gradeado amostral.
 
@@ -164,7 +164,7 @@ Observe a disposição dos pontos amostrais.
 
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
-### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summary` e `across`.
+### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summarise` e `across`.
 
 ## Premissas ou pressupostos da análise geoestatística.
 
@@ -195,15 +195,16 @@ mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
 Em resumo, temos que os métodos geoestatísticos são ótimos quando os
 dados são:
 
-> **normalmente distribuídos** estacionários (média e variância não
+> **normalmente distribuídos** e estacionários (média e variância não
 > variam significativamente no espaço).
 
 Desvios significativos da normalidade e da estacionariedade podem causar
-problemas, portanto é sempre importante começar o estudo estudando o
+problemas, portanto é sempre importante começar a análise estudando o
 histograma ou algum gráfico similar para checar a normalidade e o mapa
-dos valores no espaço para checar uma tendência significativa.
+dos valores no espaço para checar a ocorrência de tendências
+significativas.
 
-### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil`
+### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
 ### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
 
