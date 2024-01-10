@@ -259,8 +259,10 @@ Covariância e a correlação são medidas de similaridade entre duas
 variáveis. Para estender este conceito para medidas de similaridade
 espacial, considere um gráfico de dispersão em que os pares de dados
 representam medidas da mesma variável separadas por uma distância $h$
-uma da outra. Esta distância é geralmente denominada de `lag`, como
-usado nas series temporais.
+uma da outra.
+
+Esta distância é geralmente denominada de `lag`, como usado nas series
+temporais.
 
 ![](img/img-07.png)
 
@@ -284,15 +286,72 @@ distância $h$.
 
 #### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
 
-#### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que:
+#### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que
 
 $$D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}$$ e
 
 $$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$
 
+, respectivamente:
+
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
 #### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
+
+O gráfico de acima é denominado **semivariograma experimental**, o qual
+exibe um comportamento puramente aleatório ou sistemático que pode ser
+descrito por modelos matemáticos teóricos (linear, esférico,
+exponencial, gaussiano e lei de potência).
+
+## Ajuste de modelos matemáticos ao semivariograma experimental
+
+Os principais modelos a serem ajustados são:
+
+#### a) Modelo exponencial:
+
+$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp({-3 \frac{h}{a}}) \right], h > 0$$
+
+#### b) Modelo esférico:
+
+$$
+\begin{cases}
+\hat{\gamma}(h) = C_0 + C_1 [exp(\frac{3}{2}(\frac{h}{a})-\frac{1}{2}(\frac{h}{a})^3)], 0 \leq h \leq a \\
+\hat{\gamma}(h) = C_0 + C_1, h>a
+\end{cases}
+$$
+
+#### c) Modelo Gaussiano:
+
+$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h > 0$$
+
+## Interpretação dos parâmetros
+
+![](img/img-08.png)
+
+Para variáveis que apresentam dependência espacial, espera-se que os
+valores de $Z(x_i) – Z(x_i + h)$ aumentem com a distância $h$ até
+determinada distância, a partir da qual os valores estabilizam.
+
+O valor de semivariância, na qual ocorre a estabilização do
+semivariograma, é denominado de **patamar (sill)**, representado pelo
+símbolo $C_0 + C_1$, sendo aproximadamente igual ao valor da estimativa
+da variância dos dados analisados.
+
+A distância $h$ na qual ocorre a estabilização do semivariograma é
+denominada de **alcance (range)**, simbolizado por $a$, e define o
+limite da dependência espacial (autocorrelação). Na prática, pontos cuja
+distância entre eles **seja maior** que o valor de $a$, não apresentam
+autocorrelação espacial, ou seja, são aleatórios.
+
+O **efeito pepita (nugget effect)**, representado pelo símbolo $C_0$, é
+o valor de semivariância encontrado no intercepto do modelo ajustado com
+o eixo $Y$. Teoricamente, este valor deve ser zero para uma distância de
+separação $(h)$ igual a zero; entretanto, erros de amostragem e a
+variabilidade na pequena escala podem causar desvio do zero para esse
+parâmetro. Portanto, o efeito pepita representa a quantidade de
+variância não explicada ou modelada como correlação espacial.
+
+O valor $C_1$ representa a estrutura de variabilidade espacial dos dados
 
 ## Referências
 
@@ -313,9 +372,9 @@ p. 1 – 40, 1989.
 MATHERON G. Principles of geostatistics. **Economic Geology**, 58, 1963,
 1246-1266.
 
-OLIVEIRA, C. F. **Variabilidade espacial da emissão de CO2 e estoque de
-carbono do solo em áreas de eucalipto e sistema silvipastoril**.
-Dissertação de Mestrado, Agronomia, UNESP-FEIS, 2018.
+OLIVEIRA, C. F. **Variabilidade espacial da emissão de CO<sub>2</sub> e
+estoque de carbono do solo em áreas de eucalipto e sistema
+silvipastoril**. Dissertação de Mestrado, Agronomia, UNESP-FEIS, 2018.
 
 VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do
 solo**. In: NOVAIS, R.F.; ALVAREZ, V. H.; SEHAFFER, C. E. G. R. (Ed).
