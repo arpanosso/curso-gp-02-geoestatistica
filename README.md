@@ -151,27 +151,200 @@ emissão de CO<sub>2</sub> do solo na área de eucalipto. ([OLIVEIRA,
 ### 1) Carregue os pacotes necessários para as analises
 
 ``` r
+# Instalar pacotes necessários
+# install.packages("tidyverse")
+# install.packages("sp")
+# install.packages("gstat")
+# install.packages("corrplot")
+# install.packages("skimr")
+# install.packages("agricolae")
+
+# Carregar os pacotes
 library(tidyverse)
 library(sp)
 library(gstat)
 library(corrplot)
+source("R/my-functions.R")
 ```
 
 ### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções `glimpse` e `skim`, dos pacotes `{dplyr}` e `{skimr}` para a apresentação de um resumo inicial do banco de dados.
 
+``` r
+# Lendo o banco de dados
+dados_geo <- read_rds("data/geo_fco2.rds")
+glimpse(dados_geo)
+#> Rows: 188
+#> Columns: 11
+#> $ tratamento <chr> "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU",…
+#> $ id         <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, …
+#> $ x          <dbl> 0, 20, 40, 60, 80, 100, 10, 15, 20, 25, 30, 50, 55, 60, 65,…
+#> $ y          <dbl> 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1…
+#> $ fco2       <dbl> 5.164, 4.528, 5.048, 5.298, 6.576, 5.124, 10.356, 5.044, 5.…
+#> $ ts         <dbl> 23.98, 24.68, 24.36, 24.56, 24.48, 24.48, 25.18, 24.86, 25.…
+#> $ us         <dbl> 11.664611, 6.956307, 9.709750, 6.726249, 9.388142, 8.494171…
+#> $ mo         <dbl> 31, 32, 39, 38, 29, 31, 27, 29, 22, 24, 29, 24, 35, 28, 43,…
+#> $ p_h        <dbl> 4.4, 3.8, 3.7, 3.9, 4.0, 4.0, 3.7, 3.9, 3.8, 3.8, 3.9, 4.2,…
+#> $ p_resina   <dbl> 3, 6, 6, 5, 4, 5, 5, 4, 4, 4, 5, 4, 9, 5, 6, 7, 5, 3, 4, 3,…
+#> $ k          <dbl> 0.8, 1.9, 1.4, 0.9, 0.9, 0.6, 1.1, 0.8, 0.7, 0.7, 1.0, 0.8,…
+skimr::skim(dados_geo)
+```
+
+|                                                  |           |
+|:-------------------------------------------------|:----------|
+| Name                                             | dados_geo |
+| Number of rows                                   | 188       |
+| Number of columns                                | 11        |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_   |           |
+| Column type frequency:                           |           |
+| character                                        | 1         |
+| numeric                                          | 10        |
+| \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ |           |
+| Group variables                                  | None      |
+
+Data summary
+
+**Variable type: character**
+
+| skim_variable | n_missing | complete_rate | min | max | empty | n_unique | whitespace |
+|:--------------|----------:|--------------:|----:|----:|------:|---------:|-----------:|
+| tratamento    |         0 |             1 |   2 |   2 |     0 |        2 |          0 |
+
+**Variable type: numeric**
+
+| skim_variable | n_missing | complete_rate |  mean |    sd |    p0 |   p25 |   p50 |   p75 |   p100 | hist  |
+|:--------------|----------:|--------------:|------:|------:|------:|------:|------:|------:|-------:|:------|
+| id            |         0 |             1 | 47.84 | 27.79 |  1.00 | 24.00 | 47.50 | 71.00 | 102.00 | ▇▇▇▇▅ |
+| x             |         0 |             1 | 54.52 | 33.79 |  0.00 | 25.00 | 55.00 | 80.00 | 120.00 | ▇▆▇▅▅ |
+| y             |         0 |             1 | 38.14 | 27.46 |  0.00 | 20.00 | 30.00 | 60.00 | 100.00 | ▇▆▂▃▂ |
+| fco2          |         0 |             1 |  4.39 |  1.26 |  2.01 |  3.54 |  4.23 |  5.03 |  10.36 | ▅▇▂▁▁ |
+| ts            |         0 |             1 | 24.66 |  0.58 | 23.60 | 24.26 | 24.55 | 24.95 |  27.01 | ▅▇▃▁▁ |
+| us            |         0 |             1 | 15.57 |  5.68 |  4.26 | 10.39 | 13.78 | 21.06 |  24.31 | ▁▇▁▂▆ |
+| mo            |         0 |             1 | 30.33 |  5.00 | 15.00 | 27.00 | 30.00 | 33.00 |  45.00 | ▁▃▇▃▁ |
+| p_h           |         0 |             1 |  4.40 |  3.51 |  3.50 |  3.90 |  4.00 |  4.30 |  52.00 | ▇▁▁▁▁ |
+| p_resina      |         0 |             1 |  4.99 |  2.38 |  1.00 |  3.00 |  5.00 |  6.00 |  17.00 | ▇▆▂▁▁ |
+| k             |         0 |             1 |  2.15 |  1.41 |  0.60 |  1.20 |  1.70 |  2.62 |  11.50 | ▇▂▁▁▁ |
+
 ### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
+
+``` r
+# Número de categorias de tratamentos
+dados_geo |>
+  pull(tratamento) |>
+  unique()
+#> [1] "EU" "SI"
+```
 
 ### 4) Filtrar do banco de dados, selecionar somente as observações referentes à área de eucalipto.
 
+``` r
+# Filtrar as observações para o tratamento "EU"
+dados_geo |>
+  filter(tratamento == "EU")
+#> # A tibble: 102 × 11
+#>    tratamento    id     x     y  fco2    ts    us    mo   p_h p_resina     k
+#>    <chr>      <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>    <dbl> <dbl>
+#>  1 EU             1     0     0  5.16  24.0 11.7     31   4.4        3   0.8
+#>  2 EU             2    20     0  4.53  24.7  6.96    32   3.8        6   1.9
+#>  3 EU             3    40     0  5.05  24.4  9.71    39   3.7        6   1.4
+#>  4 EU             4    60     0  5.30  24.6  6.73    38   3.9        5   0.9
+#>  5 EU             5    80     0  6.58  24.5  9.39    29   4          4   0.9
+#>  6 EU             6   100     0  5.12  24.5  8.49    31   4          5   0.6
+#>  7 EU             7    10    10 10.4   25.2 10.2     27   3.7        5   1.1
+#>  8 EU             8    15    10  5.04  24.9  9.43    29   3.9        4   0.8
+#>  9 EU             9    20    10  5.27  25.0  5.21    22   3.8        4   0.7
+#> 10 EU            10    25    10  4.77  24.6  9.36    24   3.8        4   0.7
+#> # ℹ 92 more rows
+```
+
 ### 5) Apresente o gradeado amostral.
 
-Observe a disposição dos pontos amostrais.
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x, y=y)) +
+  geom_point() +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> Observe a
+disposição dos pontos amostrais.
 
 ### 6) Mapeie a emissão de CO<sub>2</sub> pelo tamanho e a cor dos marcadores de pontos.
 
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  mutate(
+    fco2_class = cut(fco2,4)
+  ) |>
+  ggplot(aes(x=x, y=y, color=fco2_class, size=fco2_class)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_d()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+# Mostrar os dois gradeados....
+dados_geo |>
+  mutate(
+    fco2_class = cut(fco2,4)
+  ) |>
+  ggplot(aes(x=x, y=y,
+             color=fco2_class,
+             size=fco2_class)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_d() +
+  facet_wrap(~tratamento)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
+``` r
+# Estatísticas Descritivas para fco2
+dados_geo |>
+  filter(tratamento == "EU") |>
+  summarise(
+    N = n(),
+    Media = mean(fco2, na.rm = TRUE),
+    Mediana = median(fco2, na.rm = TRUE),
+    Menor = min(fco2, na.rm = TRUE),
+    Maior = max(fco2, na.rm = TRUE),
+    Variancia = var(fco2, na.rm = TRUE),
+    Desvio_Padrao = sd(fco2, na.rm = TRUE),
+    Assimetria = agricolae::skewness(fco2),
+    Curtose = agricolae::kurtosis(fco2),
+    CV = 100*Desvio_Padrao/Media
+  )
+#> # A tibble: 1 × 10
+#>       N Media Mediana Menor Maior Variancia Desvio_Padrao Assimetria Curtose
+#>   <int> <dbl>   <dbl> <dbl> <dbl>     <dbl>         <dbl>      <dbl>   <dbl>
+#> 1   102  4.65    4.53  2.01  10.4      1.92          1.39       1.16    3.03
+#> # ℹ 1 more variable: CV <dbl>
+```
+
 ### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summarise` e `across`.
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  summarise(
+    across(
+      fco2:k, my_estat_desc
+    )
+  )
+#> # A tibble: 4 × 7
+#>     fco2      ts     us     mo    p_h p_resina       k
+#>    <dbl>   <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl>
+#> 1 102    102     102    102    102      102    102    
+#> 2   4.65  24.4    10.6   31.3    4.75     6.07   1.33 
+#> 3   1.92   0.100   4.45  34.7   22.5      6.10   0.207
+#> 4   1.39   0.316   2.11   5.89   4.74     2.47   0.455
+```
 
 ## Premissas ou pressupostos da análise geoestatística.
 
@@ -213,13 +386,130 @@ significativas.
 
 ### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2) |>
+  quantile() # median()  mean()
+#>      0%     25%     50%     75%    100% 
+#>  2.0060  3.6740  4.5310  5.3695 10.3560
+
+
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=fco2)) +
+  geom_histogram(bins=15,fill="lightgray",color="black") +
+  theme_bw() +
+  geom_vline(xintercept = c(4.65, 4.53, 3.67, 5.36),
+             linetype=2,
+             color= c("red","blue" ,"blue" ,"blue"),
+             lwd = 1)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
 ### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(sample = fco2)) +
+  stat_qq() +
+  stat_qq_line(color="blue",lwd=2) +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ### 11) Realize o teste de normalidade dos dados para `fco2`.
 
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2) |>
+  shapiro.test() # teste de normalidade
+#> 
+#>  Shapiro-Wilk normality test
+#> 
+#> data:  pull(filter(dados_geo, tratamento == "EU"), fco2)
+#> W = 0.93666, p-value = 0.0001034
+```
+
 ### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
 
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x, y=fco2)) +
+  geom_point() +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=y, y=fco2)) +
+  geom_point() +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
 ### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  lm(formula = fco2 ~ x) |>
+  summary.lm()
+#> 
+#> Call:
+#> lm(formula = fco2 ~ x, data = filter(dados_geo, tratamento == 
+#>     "EU"))
+#> 
+#> Residuals:
+#>     Min      1Q  Median      3Q     Max 
+#> -2.6034 -0.9864 -0.0901  0.7055  5.7902 
+#> 
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 4.543933   0.277501  16.374   <2e-16 ***
+#> x           0.002182   0.004789   0.456     0.65    
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 1.392 on 100 degrees of freedom
+#> Multiple R-squared:  0.002072,   Adjusted R-squared:  -0.007907 
+#> F-statistic: 0.2077 on 1 and 100 DF,  p-value: 0.6496
+```
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  lm(formula = fco2 ~ y) |>
+  summary.lm()
+#> 
+#> Call:
+#> lm(formula = fco2 ~ y, data = filter(dados_geo, tratamento == 
+#>     "EU"))
+#> 
+#> Residuals:
+#>     Min      1Q  Median      3Q     Max 
+#> -2.6495 -0.9722 -0.1563  0.7747  5.7915 
+#> 
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 4.541814   0.260549  17.432   <2e-16 ***
+#> y           0.002273   0.004493   0.506    0.614    
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 1.392 on 100 degrees of freedom
+#> Multiple R-squared:  0.002553,   Adjusted R-squared:  -0.007422 
+#> F-statistic: 0.2559 on 1 and 100 DF,  p-value: 0.614
+```
 
 ## Medidas da dispersão conjunta de duas variáveis X e Y
 
@@ -255,7 +545,36 @@ Onde $S_X^2$ e $S_y^2$ são as variâncias de $X$ e $Y$, respectivamente.
 
 ### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
 
-## Definições em geoestatística
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  plot()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  cor() |>
+  corrplot(method = "ellipse",
+           type = "upper")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  GGally::ggpairs() +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- --> \##
+Definições em geoestatística
 
 > Geoestatística lida com dados autocorrelacionados espacialmente.
 
@@ -292,7 +611,26 @@ distância $h$.
 
 #### 15.1) Extraia os vetores `x`, `y` e `z`.
 
+``` r
+x <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(x)
+
+y <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(y)
+
+z <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2)
+```
+
 #### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
+
+``` r
+matriz_dist <- matrix(0,ncol=102,nrow=102)
+matriz_gamma <- matrix(0,ncol=102,nrow=102)
+```
 
 #### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que
 
@@ -302,9 +640,52 @@ $$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$
 
 , respectivamente:
 
+``` r
+for(i in 1:102){
+  for(j in 1:102){
+    matriz_dist[i,j] = sqrt((x[i]-x[j])^2 + (y[i]-y[j])^2)
+    matriz_gamma[i,j] = (z[i]-z[j])^2
+  }
+}
+```
+
+``` r
+table(matriz_dist) |>
+  plot()
+abline(h=30)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
+``` r
+lag <- 5
+active_lag_distance <- 50
+h <- seq(5, active_lag_distance, lag)
+n_h <- h
+gamma_h <- h
+for(i in seq_along(h)){
+  if(i == 1){
+    filtro <- matriz_dist > 0 & matriz_dist <= h[i]
+  }else{
+    filtro <- matriz_dist > h[i-1] & matriz_dist <= h[i]
+  }
+  n_h[i] <- sum(filtro)/2
+  gamma_h [i] <- sum(matriz_gamma[filtro])/2/n_h[i]/2
+}
+```
+
 #### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
+
+``` r
+tibble(n_h,h,gamma_h) |>
+  ggplot(aes(x=h,y=gamma_h)) +
+  geom_point(size=3) +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 O gráfico de acima é denominado **semivariograma experimental**, o qual
 exibe um comportamento puramente aleatório ou sistemático que pode ser
@@ -385,6 +766,8 @@ levemente ondulada.
 ![](img/img-11.png)
 
 ## Krigagem Ordinária
+
+![](img/img-D01.png)
 
 ## Referências
 

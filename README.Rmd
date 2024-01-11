@@ -10,7 +10,6 @@ knitr::opts_chunk$set(
   warning = FALSE, 
   error = FALSE, 
   message = FALSE,
-  echo = TRUE, eval = FALSE,
   comment = "#>"
 )
 ```
@@ -102,50 +101,119 @@ Um estudo clássico de geoestatística normalmente começa com uma descrição d
 ### 1) Carregue os pacotes necessários para as analises
 
 ```{r}
+# Instalar pacotes necessários
+# install.packages("tidyverse")
+# install.packages("sp")
+# install.packages("gstat")
+# install.packages("corrplot")
+# install.packages("skimr")
+# install.packages("agricolae")
+
+# Carregar os pacotes
 library(tidyverse)
 library(sp)
 library(gstat)
 library(corrplot)
+source("R/my-functions.R")
 ```
 
 ### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções `glimpse` e `skim`, dos pacotes `{dplyr}` e `{skimr}` para a apresentação de um resumo inicial do banco de dados.
 
 
 ```{r}
-
+# Lendo o banco de dados
+dados_geo <- read_rds("data/geo_fco2.rds")
+glimpse(dados_geo)
+skimr::skim(dados_geo)
 ```
 
 ### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
+```{r}
+# Número de categorias de tratamentos
+dados_geo |>
+  pull(tratamento) |>
+  unique()
+```
 
 ### 4) Filtrar do banco de dados, selecionar somente as observações referentes à área de eucalipto.
 
 ```{r}
-
+# Filtrar as observações para o tratamento "EU"
+dados_geo |>
+  filter(tratamento == "EU")
 ```
 
 ### 5) Apresente o gradeado amostral.
 
 ```{r}
-
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x, y=y)) +
+  geom_point() +
+  theme_bw()
 ```
 Observe a disposição dos pontos amostrais.
 
 ### 6) Mapeie a emissão de CO~2~ pelo tamanho e a cor dos marcadores de pontos.
 
 ```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  mutate(
+    fco2_class = cut(fco2,4)
+  ) |>
+  ggplot(aes(x=x, y=y, color=fco2_class, size=fco2_class)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_d()
+```
 
+
+```{r}
+# Mostrar os dois gradeados....
+dados_geo |>
+  mutate(
+    fco2_class = cut(fco2,4)
+  ) |>
+  ggplot(aes(x=x, y=y,
+             color=fco2_class,
+             size=fco2_class)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_d() +
+  facet_wrap(~tratamento)
 ```
 
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
 ```{r}
-
+# Estatísticas Descritivas para fco2
+dados_geo |>
+  filter(tratamento == "EU") |>
+  summarise(
+    N = n(),
+    Media = mean(fco2, na.rm = TRUE),
+    Mediana = median(fco2, na.rm = TRUE),
+    Menor = min(fco2, na.rm = TRUE),
+    Maior = max(fco2, na.rm = TRUE),
+    Variancia = var(fco2, na.rm = TRUE),
+    Desvio_Padrao = sd(fco2, na.rm = TRUE),
+    Assimetria = agricolae::skewness(fco2),
+    Curtose = agricolae::kurtosis(fco2),
+    CV = 100*Desvio_Padrao/Media
+  )
 ```
 
 ### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summarise` e `across`.
 
 ```{r}
-
+dados_geo |>
+  filter(tratamento == "EU") |>
+  summarise(
+    across(
+      fco2:k, my_estat_desc
+    )
+  )
 ```
 ## Premissas ou pressupostos da análise geoestatística.
 
@@ -169,32 +237,75 @@ Desvios significativos da normalidade e da estacionariedade podem causar problem
 ### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
 ```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2) |>
+  quantile() # median()  mean()
 
 
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=fco2)) +
+  geom_histogram(bins=15,fill="lightgray",color="black") +
+  theme_bw() +
+  geom_vline(xintercept = c(4.65, 4.53, 3.67, 5.36),
+             linetype=2,
+             color= c("red","blue" ,"blue" ,"blue"),
+             lwd = 1)
 
 ```
 
 ### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
 
 ```{r}
-
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(sample = fco2)) +
+  stat_qq() +
+  stat_qq_line(color="blue",lwd=2) +
+  theme_bw()
 ```
 
 ### 11) Realize o teste de normalidade dos dados para `fco2`.
+```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2) |>
+  shapiro.test() # teste de normalidade
+```
 
 ### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
 
 ```{r}
-
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x, y=fco2)) +
+  geom_point() +
+  theme_bw()
 ```
 
 ```{r}
-
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=y, y=fco2)) +
+  geom_point() +
+  theme_bw()
 ```
 
 ### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
 ```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  lm(formula = fco2 ~ x) |>
+  summary.lm()
+```
 
+
+```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  lm(formula = fco2 ~ y) |>
+  summary.lm()
 ```
 
 ## Medidas da dispersão conjunta de duas variáveis X e Y
@@ -222,7 +333,29 @@ Onde $S_X^2$ e $S_y^2$ são as variâncias de $X$ e $Y$, respectivamente.
 ### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
 
 ```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  plot()
+```
 
+
+```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  cor() |>
+  corrplot(method = "ellipse",
+           type = "upper")
+```
+
+
+```{r}
+dados_geo |>
+  filter(tratamento == "EU") |>
+  select(fco2:k) |>
+  GGally::ggpairs() +
+  theme_bw()
 ```
 ## Definições em geoestatística
 
@@ -254,14 +387,25 @@ Sendo $z(x_i)$ e $z(x_i + h)$ os valores de cauda e da cabeça, respectivamente 
 #### 15.1) Extraia os vetores `x`, `y` e `z`.
 
 ```{r}
+x <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(x)
 
+y <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(y)
+
+z <- dados_geo |>
+  filter(tratamento == "EU") |>
+  pull(fco2)
 ```
 
 #### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
 
 
 ```{r}
-
+matriz_dist <- matrix(0,ncol=102,nrow=102)
+matriz_gamma <- matrix(0,ncol=102,nrow=102)
 ```
 
 #### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que
@@ -276,18 +420,45 @@ $$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$
 
 
 ```{r}
+for(i in 1:102){
+  for(j in 1:102){
+    matriz_dist[i,j] = sqrt((x[i]-x[j])^2 + (y[i]-y[j])^2)
+    matriz_gamma[i,j] = (z[i]-z[j])^2
+  }
+}
+```
 
+```{r}
+table(matriz_dist) |>
+  plot()
+abline(h=30)
 ```
 
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
 ```{r}
-
+lag <- 5
+active_lag_distance <- 50
+h <- seq(5, active_lag_distance, lag)
+n_h <- h
+gamma_h <- h
+for(i in seq_along(h)){
+  if(i == 1){
+    filtro <- matriz_dist > 0 & matriz_dist <= h[i]
+  }else{
+    filtro <- matriz_dist > h[i-1] & matriz_dist <= h[i]
+  }
+  n_h[i] <- sum(filtro)/2
+  gamma_h [i] <- sum(matriz_gamma[filtro])/2/n_h[i]/2
+}
 ```
 
 #### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
 ```{r}
-
+tibble(n_h,h,gamma_h) |>
+  ggplot(aes(x=h,y=gamma_h)) +
+  geom_point(size=3) +
+  theme_bw()
 ```
 
 O gráfico de acima é denominado **semivariograma experimental**, o qual exibe um comportamento puramente aleatório ou sistemático que pode ser descrito por modelos matemáticos teóricos (linear, esférico, exponencial, gaussiano e lei de potência).
@@ -361,6 +532,9 @@ O valor $C_1$ representa a estrutura de variabilidade espacial dos dados.
 ```{r}
 
 ```
+
+
+![](img/img-D01.png)
 
 ## Referências
 
