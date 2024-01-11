@@ -181,10 +181,10 @@ Se todos os valores de uma variável regionalizada forem considerados em
 todos os pontos dentro de uma área amostral, a variável regionalizada é
 apenas uma de infinitas variáveis aleatórias.
 
-Esse conjunto é chamado de **função aleatória** e é simbolizado por
+Esse conjunto é chamado de **função aleatória (FA)** e é simbolizado por
 $Z(x_i)$. Na prática, quando retiramos uma amostra de solo em um local
 com coordenadas definidas, temos apenas uma única realização da função
-aleatória.
+aleatória (FA).
 
 Para estimar valores em locais não amostrados, deve-se introduzir as
 restrições de **estacionaridade estatística**. A existência de
@@ -352,7 +352,23 @@ variabilidade na pequena escala podem causar desvio do zero para esse
 parâmetro. Portanto, o efeito pepita representa a quantidade de
 variância não explicada ou modelada como correlação espacial.
 
-O valor $C_1$ representa a estrutura de variabilidade espacial dos dados
+O valor $C_1$ representa a estrutura de variabilidade espacial dos
+dados.
+
+## Interpretação dos modelos
+
+**Modelo Exponencial** - descreve uma descreve uma $FA$ que é bem
+errática à pequenas distâncias, e a sua correspondente realização
+apresentada na figura a seguir, evidencia considerável variabilidade na
+pequena escala.
+
+![](img/img-09.png)
+
+**Modelos Esférico** - descreve uma $FA$ que é menos errática em
+pequenas distâncias, e sua correspondente realização pode ser verificada
+abaixo.
+
+![](img/img-10.png)
 
 ## Referências
 

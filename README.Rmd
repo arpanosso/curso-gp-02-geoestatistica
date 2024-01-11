@@ -191,7 +191,7 @@ Uma variável regionalizada é uma variável aleatória que assume diferentes va
 
 Se todos os valores de uma variável regionalizada forem considerados em todos os pontos dentro de uma área amostral, a variável regionalizada é apenas uma de infinitas variáveis aleatórias. 
 
-Esse conjunto é chamado de **função aleatória** e é simbolizado por $Z(x_i)$. Na prática, quando retiramos uma amostra de solo em um local com coordenadas definidas, temos apenas uma única realização da função aleatória. 
+Esse conjunto é chamado de **função aleatória (FA)** e é simbolizado por $Z(x_i)$. Na prática, quando retiramos uma amostra de solo em um local com coordenadas definidas, temos apenas uma única realização da função aleatória (FA). 
 
 Para estimar valores em locais não amostrados, deve-se introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
 
@@ -299,8 +299,6 @@ Esta distância é geralmente denominada de `lag`, como usado nas series tempora
 ![](img/img-07.png)
 
 
-
-
 ## O semivariograma experimental (variograma experimental)
 
 Ao contrário das funções de covariância e correlação, as quais medem a similaridade, o semivariograma experimental $\gamma(h)$ mede dissimilaridade média entre dados separados por um vetor $h$, ou seja,
@@ -402,6 +400,9 @@ Os principais modelos a serem ajustados são:
 
 $$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp({-3 \frac{h}{a}}) \right], h > 0$$
 
+
+
+
 #### b) Modelo esférico:
 
 $$
@@ -450,7 +451,18 @@ A distância $h$ na qual ocorre a estabilização do semivariograma é denominad
 
 O **efeito pepita (nugget effect)**, representado pelo símbolo $C_0$, é o valor de semivariância encontrado no intercepto do modelo ajustado com o eixo $Y$. Teoricamente, este valor deve ser zero para uma distância de separação $(h)$ igual a zero; entretanto, erros de amostragem e a variabilidade na pequena escala podem causar desvio do zero para esse parâmetro. Portanto, o efeito pepita representa a quantidade de variância não explicada ou modelada como correlação espacial.
 
-O valor $C_1$ representa a estrutura de variabilidade espacial dos dados
+O valor $C_1$ representa a estrutura de variabilidade espacial dos dados.
+
+
+## Interpretação dos modelos
+
+**Modelo Exponencial** - descreve uma descreve uma $FA$ que é bem errática à pequenas distâncias, e a sua correspondente realização apresentada na figura a seguir, evidencia considerável variabilidade na pequena escala.
+
+![](img/img-09.png)
+
+**Modelos Esférico** - descreve uma $FA$ que é menos errática em pequenas distâncias, e sua correspondente realização pode ser verificada abaixo.
+  
+![](img/img-10.png)
 
 ```{r}
 df_aux <- geo_fco2 %>% 
