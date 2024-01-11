@@ -150,6 +150,13 @@ emissão de CO<sub>2</sub> do solo na área de eucalipto. ([OLIVEIRA,
 
 ### 1) Carregue os pacotes necessários para as analises
 
+``` r
+library(tidyverse)
+library(sp)
+library(gstat)
+library(corrplot)
+```
+
 ### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções `glimpse` e `skim`, dos pacotes `{dplyr}` e `{skimr}` para a apresentação de um resumo inicial do banco de dados.
 
 ### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
@@ -369,6 +376,15 @@ pequenas distâncias, e sua correspondente realização pode ser verificada
 abaixo.
 
 ![](img/img-10.png)
+
+**Modelo Gaussiano** descreve uma $FA$ que é extremamente contínua, o
+seu semivariograma é tangencial ao eixo x na origem, e cresce
+suavemente. A sua correspondente realização, figura abaixo é suave e
+levemente ondulada.
+
+![](img/img-11.png)
+
+## Krigagem Ordinária
 
 ## Referências
 

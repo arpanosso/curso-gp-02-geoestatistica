@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   warning = FALSE, 
   error = FALSE, 
   message = FALSE,
-  echo = FALSE, eval = FALSE,
+  echo = TRUE, eval = FALSE,
   comment = "#>"
 )
 ```
@@ -112,9 +112,7 @@ library(corrplot)
 
 
 ```{r}
-geo_fco2 <- read_rds("data/geo_fco2.rds")
-glimpse(geo_fco2)
-skimr::skim(geo_fco2)
+
 ```
 
 ### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
@@ -122,66 +120,32 @@ skimr::skim(geo_fco2)
 ### 4) Filtrar do banco de dados, selecionar somente as observações referentes à área de eucalipto.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU")
+
 ```
 
 ### 5) Apresente o gradeado amostral.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  ggplot(aes(x,y)) + 
-  geom_point() +
-  theme_bw()
+
 ```
 Observe a disposição dos pontos amostrais.
 
 ### 6) Mapeie a emissão de CO~2~ pelo tamanho e a cor dos marcadores de pontos.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  mutate(fco2_class = cut(fco2, 5)) %>% 
-  ggplot(aes(x, y, size = fco2_class,
-             color = fco2_class)) + 
-  geom_point() +
-  theme_bw() +
-  scale_color_brewer(palette = "Oranges")
+
 ```
 
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  summarise(
-    N = n(),
-    Media = mean(fco2),
-    Mediana = median(fco2),
-    Minimo = min(fco2),
-    Maximo = max(fco2),
-    Variancia = var(fco2),
-    Desv_Pad = sd(fco2),
-    Assimetria = agricolae::skewness(fco2),
-    Curtose = agricolae::kurtosis(fco2),
-    CV = 100*Desv_Pad/Media
-  )
+
 ```
 
 ### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summarise` e `across`.
 
 ```{r}
-my_func <- function(x){
-  media <- mean(x)
-  vari <- var(x)
-  c(`MEDIA` = media, `VARIANCIA` = vari)
-}
 
-geo_fco2 %>% 
-  summarise(
-    across(
-      fco2:k,my_func))
 ```
 ## Premissas ou pressupostos da análise geoestatística.
 
@@ -205,22 +169,15 @@ Desvios significativos da normalidade e da estacionariedade podem causar problem
 ### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
 ```{r}
-geo_fco2 %>% 
-  #filter(tratamento == "EU") %>% 
-  mutate(media_fco2 = mean(fco2)) %>% 
-  ggplot(aes(x=fco2,fill=tratamento)) +
-  geom_histogram(bins=10)
+
+
 
 ```
 
 ### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  ggplot(aes(sample=fco2)) +
-  stat_qq() +
-  stat_qq_line()
+
 ```
 
 ### 11) Realize o teste de normalidade dos dados para `fco2`.
@@ -228,29 +185,16 @@ geo_fco2 %>%
 ### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  ggplot(aes(x=x, y=fco2)) +
-  geom_point()
+
 ```
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  ggplot(aes(x=y, y=fco2)) +
-  geom_point()
+
 ```
 
 ### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  mutate(
-    y2 = y*y,
-    x2 = x*x
-  ) %>% 
-  lm(fco2 ~ y + y2 + x + x2, data=.) %>% 
-  summary.lm()
+
 ```
 
 ## Medidas da dispersão conjunta de duas variáveis X e Y
@@ -278,11 +222,7 @@ Onde $S_X^2$ e $S_y^2$ são as variâncias de $X$ e $Y$, respectivamente.
 ### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
 
 ```{r}
-geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  select(fco2:k) %>% 
-  cor() %>% 
-  corrplot::corrplot(method = "ellipse",type = "upper")
+
 ```
 ## Definições em geoestatística
 
@@ -314,25 +254,14 @@ Sendo $z(x_i)$ e $z(x_i + h)$ os valores de cauda e da cabeça, respectivamente 
 #### 15.1) Extraia os vetores `x`, `y` e `z`.
 
 ```{r}
-x <- geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  pull(x)
 
-y <- geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  pull(y)
-
-z <- geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  pull(fco2)
 ```
 
 #### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
 
 
 ```{r}
-m_dist <- matrix(0,ncol = 102, nrow = 102)
-dire <- m_2gamma <- m_dist
+
 ```
 
 #### 15.3) Calcule a matriz de distância $D$ entre todos os pontos amostrais e a matriz de valores de gamma $\gamma$. Lembrando que
@@ -347,46 +276,18 @@ $$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$
 
 
 ```{r}
-for(i in 1:102){
-  for( j in 1:102){
-    m_dist[i,j] = sqrt((x[i]-x[j])^2+(y[i]-y[j])^2)
-    m_2gamma[i,j] = 1/2*(z[i]-z[j])^2
-    dire[i,j] = atan((y[j]-y[i])/(x[j]-x[i]))*180/pi
-  }
-}
-dire <- ifelse(dire < 0, dire* -1 + 180, dire)
-table(m_dist) %>% plot()
-abline(h=30)
+
 ```
 
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
 ```{r}
-lag = 5
-active_lag_distance = 50
-h <- seq(5,active_lag_distance,lag)
-direction <- n_h <- gamma <- h
-for( i in seq_along(h)){
-  if(i == 1){
-    filtro <- m_dist > 0 & m_dist <= h[i]
-    n_h[i] <- sum(filtro)/2
-    gamma[i] <- sum(m_2gamma[filtro])/n_h[i]/2
-    direction[i] = mean(dire[filtro])
-  }else{
-    filtro <- m_dist > h[i-1] & m_dist <= h[i]
-    n_h[i] <- sum(filtro)/2
-    gamma[i] <- sum(m_2gamma[filtro])/n_h[i]/2
-    direction[i] = mean(dire[filtro])
-  }
-}
+
 ```
 
 #### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
 ```{r}
-tibble(n_h, h,gamma, direction) %>% 
-  ggplot(aes(x=h,y=gamma)) +
-  geom_point() +
-  theme_bw()
+
 ```
 
 O gráfico de acima é denominado **semivariograma experimental**, o qual exibe um comportamento puramente aleatório ou sistemático que pode ser descrito por modelos matemáticos teóricos (linear, esférico, exponencial, gaussiano e lei de potência).
@@ -417,25 +318,7 @@ $$
 $$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h > 0$$
 
 ```{r}
-tibble(n_h, h,gamma, direction) %>% 
-  ggplot(aes(x=h,y=gamma)) +
-  geom_point() +
-  theme_bw() +
-  stat_smooth(method = "nls", formula = 'y~c0+c1*(1-exp(-3*x/a))',
-              method.args = list(start = c(c0=0.1,
-                                           c1=1.8,
-                                           a=25)),
-              se=FALSE,color = "red") +
-  stat_smooth(method = "nls", formula = 'y~c0+c1*exp(-3/2*x/a-1/2*(x/a)^3)',
-              method.args = list(start = c(c0=0.1,
-                                           c1=1.8,
-                                           a=20)),
-              se=FALSE,color = "blue") +
-  stat_smooth(method = "nls", formula = 'y~c0+c1*(1-exp(-x^2/a^2))',
-              method.args = list(start = c(c0=0.1,
-                                           c1=1.8,
-                                           a=25)),
-              se=FALSE,color = "darkgreen")
+
 ```
 
 ## Interpretação dos parâmetros
@@ -464,20 +347,19 @@ O valor $C_1$ representa a estrutura de variabilidade espacial dos dados.
   
 ![](img/img-10.png)
 
+
+**Modelo Gaussiano** descreve uma $FA$ que é extremamente contínua, o seu semivariograma é tangencial ao eixo x na origem, e cresce suavemente. A sua correspondente realização, figura abaixo é suave e levemente ondulada.
+
+![](img/img-11.png)
+
+## Krigagem Ordinária
+
 ```{r}
-df_aux <- geo_fco2 %>% 
-  filter(tratamento == "EU") %>% 
-  select(x,y,fco2) %>% 
-  rename(z=fco2)
+
 ```
 
 ```{r}
-coordinates(df_aux) = ~ x + y
-formula <- z ~ 1
-variograma <- variogram(formula,df_aux)
-variograma %>% 
-  ggplot(aes(x=dist, y=gamma)) +
-  geom_point()
+
 ```
 
 ## Referências
