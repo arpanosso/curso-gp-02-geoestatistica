@@ -541,7 +541,9 @@ facilitando a interpretação. Um valor próximo de $1$ indica uma forte
 relação positiva, $-1$ indica uma forte relação negativa, e $0$ indica
 ausência de relação linear.
 
-Onde $S_X^2$ e $S_y^2$ são as variâncias de $X$ e $Y$, respectivamente.
+$$
+r=\frac{\sum\limits_{i=1}^n(X_i - \bar{X})(Y_i - \bar{Y})}{\sqrt{\sum\limits_{i=1}^n(X_i - \bar{X})^2\sum\limits_{i=1}^n(Y_i - \bar{Y})^2}}
+$$
 
 ### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
 
