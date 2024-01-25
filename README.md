@@ -220,7 +220,7 @@ Data summary
 | ts            |         0 |             1 | 24.66 |  0.58 | 23.60 | 24.26 | 24.55 | 24.95 |  27.01 | ▅▇▃▁▁ |
 | us            |         0 |             1 | 15.57 |  5.68 |  4.26 | 10.39 | 13.78 | 21.06 |  24.31 | ▁▇▁▂▆ |
 | mo            |         0 |             1 | 30.33 |  5.00 | 15.00 | 27.00 | 30.00 | 33.00 |  45.00 | ▁▃▇▃▁ |
-| p_h           |         0 |             1 |  4.40 |  3.51 |  3.50 |  3.90 |  4.00 |  4.30 |  52.00 | ▇▁▁▁▁ |
+| p_h           |         0 |             1 |  4.15 |  0.36 |  3.50 |  3.90 |  4.00 |  4.30 |   5.70 | ▅▇▂▁▁ |
 | p_resina      |         0 |             1 |  4.99 |  2.38 |  1.00 |  3.00 |  5.00 |  6.00 |  17.00 | ▇▆▂▁▁ |
 | k             |         0 |             1 |  2.15 |  1.41 |  0.60 |  1.20 |  1.70 |  2.62 |  11.50 | ▇▂▁▁▁ |
 
@@ -338,12 +338,12 @@ dados_geo |>
     )
   )
 #> # A tibble: 4 × 7
-#>     fco2      ts     us     mo    p_h p_resina       k
-#>    <dbl>   <dbl>  <dbl>  <dbl>  <dbl>    <dbl>   <dbl>
-#> 1 102    102     102    102    102      102    102    
-#> 2   4.65  24.4    10.6   31.3    4.75     6.07   1.33 
-#> 3   1.92   0.100   4.45  34.7   22.5      6.10   0.207
-#> 4   1.39   0.316   2.11   5.89   4.74     2.47   0.455
+#>     fco2      ts     us     mo     p_h p_resina       k
+#>    <dbl>   <dbl>  <dbl>  <dbl>   <dbl>    <dbl>   <dbl>
+#> 1 102    102     102    102    102       102    102    
+#> 2   4.65  24.4    10.6   31.3    4.29      6.07   1.33 
+#> 3   1.92   0.100   4.45  34.7    0.190     6.10   0.207
+#> 4   1.39   0.316   2.11   5.89   0.436     2.47   0.455
 ```
 
 ## Premissas ou pressupostos da análise geoestatística.
@@ -650,12 +650,15 @@ for(i in 1:102){
 ```
 
 ``` r
-table(matriz_dist) |>
+table(matriz_dist) %/% 2 |>
   plot()
-abline(h=30)
+abline(h=30, col="red", lty =2)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+recomenda-se um núemro de pares de ponto em uma dada distância de
+separação $h$ sempre maior que $30$.
 
 #### 15.4) Calcule $h$, $N(h)$ e $\gamma(h)$.
 
@@ -698,13 +701,13 @@ Os principais modelos a serem ajustados são:
 
 #### a) Modelo exponencial:
 
-$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp({-3 \frac{h}{a}}) \right], h > 0$$
+$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp\left({-3 \frac{h}{a}}\right) \right], h > 0$$
 
 #### b) Modelo esférico:
 
 $$
 \begin{cases}
-\hat{\gamma}(h) = C_0 + C_1 [exp(\frac{3}{2}(\frac{h}{a})-\frac{1}{2}(\frac{h}{a})^3)], 0 \leq h \leq a \\
+\hat{\gamma}(h) = C_0 + C_1 \left[exp\left(\frac{3}{2}(\frac{h}{a})-\frac{1}{2}(\frac{h}{a})^3\right)\right], 0 \leq h \leq a \\
 \hat{\gamma}(h) = C_0 + C_1, h>a
 \end{cases}
 $$
@@ -712,8 +715,7 @@ $$
 #### c) Modelo Gaussiano:
 
 $$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h > 0$$
-
-## Interpretação dos parâmetros
+\## Interpretação dos parâmetros
 
 ![](img/img-08.png)
 
@@ -735,20 +737,19 @@ autocorrelação espacial, ou seja, são aleatórios.
 O **efeito pepita (nugget effect)**, representado pelo símbolo $C_0$, é
 o valor de semivariância encontrado no intercepto do modelo ajustado com
 o eixo $Y$. Teoricamente, este valor deve ser zero para uma distância de
-separação $(h)$ igual a zero; entretanto, erros de amostragem e a
-variabilidade na pequena escala podem causar desvio do zero para esse
-parâmetro. Portanto, o efeito pepita representa a quantidade de
-variância não explicada ou modelada como correlação espacial.
+separação $(h)$ igual a zero; entretanto, **erros de amostragem** e a
+**variabilidade na pequena** escala podem causar desvio do zero para
+esse parâmetro. Portanto, o efeito pepita representa a **quantidade de
+variância não explicada** ou modelada como correlação espacial.
 
 O valor $C_1$ representa a estrutura de variabilidade espacial dos
 dados.
 
 ## Interpretação dos modelos
 
-**Modelo Exponencial** - descreve uma descreve uma $FA$ que é bem
-errática à pequenas distâncias, e a sua correspondente realização
-apresentada na figura a seguir, evidencia considerável variabilidade na
-pequena escala.
+**Modelo Exponencial** - descreve uma $FA$ que é bem errática à pequenas
+distâncias, e a sua correspondente realização apresentada na figura a
+seguir, evidencia considerável variabilidade na pequena escala.
 
 ![](img/img-09.png)
 
@@ -764,6 +765,8 @@ suavemente. A sua correspondente realização, figura abaixo é suave e
 levemente ondulada.
 
 ![](img/img-11.png)
+
+### 16) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
 
 ## Krigagem Ordinária
 
