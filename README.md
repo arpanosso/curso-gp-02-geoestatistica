@@ -666,7 +666,7 @@ separação $h$ sempre maior que $30$.
 
 ``` r
 lag <- 5
-active_lag_distance <- 50
+active_lag_distance <- 60
 h <- seq(5, active_lag_distance, lag)
 n_h <- h
 gamma_h <- h
@@ -681,7 +681,7 @@ for(i in seq_along(h)){
 }
 ```
 
-#### 15.5) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
+#### 15.5) Construa o semivariograma experimental $h$ vs $\gamma(h)$.
 
 ``` r
 tibble(n_h,h,gamma_h) |>
@@ -699,25 +699,57 @@ exponencial, gaussiano e lei de potência).
 
 ## Ajuste de modelos matemáticos ao semivariograma experimental
 
+O gráfico do semivariograma experimental, $\hat{\gamma}(h)$, é formado
+por uma série de valores, sobre os quais se objetiva ajustar uma função.
+É importante que o modelo ajustado represente a tendência de
+$\hat{\gamma}(h)$ em relação a $h$.
+
+O procedimento de ajuste não é direto e automático, como no caso de uma
+regressão, por exemplo, mas sim interativo, pois nesse processo faz-se
+um primeiro ajuste e verifica-se a adequação do modelo teórico.
+Dependendo do ajuste obtido, pode-se ou não redefinir o modelo, até
+obter um que seja considerado satisfatório.
+
 Os principais modelos a serem ajustados são:
 
-#### a) Modelo exponencial:
+#### a) Efeito Pepita:
+
+$$\begin{cases}
+\hat{\gamma}(h) = 0 \text{ se }  h=0 \\
+\hat{\gamma}(h) = Cte \text{ caso contrário }
+\end{cases}$$
+
+![](img/img-15.png)
+
+#### b) Modelo exponencial:
+
+\$\$ (h) = b(h)^c 0 \< c \< 2 h
+
+\$\$ ![](img/img-16.png)
+
+#### c) Modelo exponencial:
 
 $$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp\left({-3 \frac{h}{a}}\right) \right], h > 0$$
 
-#### b) Modelo esférico:
+#### d) Modelo esférico:
 
-$$
-\begin{cases}
+$$\begin{cases}
 \hat{\gamma}(h) = C_0 + C_1 \left[exp\left(\frac{3}{2}(\frac{h}{a})-\frac{1}{2}(\frac{h}{a})^3\right)\right], 0 \leq h \leq a \\
 \hat{\gamma}(h) = C_0 + C_1, h>a
-\end{cases}
-$$
+\end{cases}$$
 
-#### c) Modelo Gaussiano:
+#### e) Modelo Gaussiano:
 
 $$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h > 0$$
-\## Interpretação dos parâmetros
+O modelo esférico alcança o valor do patamar $(C_0+C_1)$ no valor de
+alcance $(a)$ especificado. Os modelos exponencial e gaussiano se
+aproximam do patamar assintoticamente, com a representando o alcance
+prático, ou seja, a distância na qual a semivariância alcança $95\%$ do
+valor do patamar.
+
+![](img/img-17.png)
+
+## Interpretação dos parâmetros
 
 ![](img/img-08.png)
 
@@ -768,9 +800,155 @@ levemente ondulada.
 
 ![](img/img-11.png)
 
-### 16) Construa o semivariograma experimental $N(h)$ vs $\gamma(h)$.
+### 16) Utilizando as funções `coordinates()` e `variogram()` dos pacotes `{sp}` e `{gstat}`, construa o semivariograma experimental $h$ vs $\gamma(h)$, não esqueça de adicionar o número de pares de pontos de cada valor estimado de semivariância para futuras inspeções.
 
-## Krigagem Ordinária
+``` r
+# Criando o arquivo necessário somente x, y, e z
+df_aux <- dados_geo |> 
+  select(x, y, fco2) |> 
+  rename(z=fco2) 
+class(df_aux)
+#> [1] "tbl_df"     "tbl"        "data.frame"
+
+coordinates(df_aux) = ~x + y
+class(df_aux)
+#> [1] "SpatialPointsDataFrame"
+#> attr(,"package")
+#> [1] "sp"
+```
+
+``` r
+# Criando a fórmula para
+formula <- z~1
+
+# Criando o semivariograma experimental
+semivariograma_experimental <- variogram(formula, data=df_aux,
+                                         width = 9,
+                                         cutoff=100,
+                                         cressie=TRUE)
+semivariograma_experimental |> 
+  ggplot(aes(x=dist,y=gamma)) +
+  geom_point() +
+  theme_bw() +
+  annotate("text", x=semivariograma_experimental$dist, 
+           y=semivariograma_experimental$gamma*.98, 
+           label = semivariograma_experimental$np)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- --> \### 17)
+Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma
+experimental anteriormente apresentado. Utilize as funções
+`fit.variogram`, `vgm` e `variogramLine`, pertencentes ao pacote
+`{gstat}`.
+
+## Ajuste Esférico
+
+``` r
+modelo_ajustado <- fit.variogram(semivariograma_experimental,
+                                 vgm(model = "Sph",nugget = 0.5,
+                                     psill = 1.2, range = 50 ))
+preditos <- variogramLine(object = modelo_ajustado, maxdist = 100)
+
+my_fitted_semivar <- semivariograma_experimental |> 
+  ggplot(aes(x=dist,y=gamma)) +
+  geom_point() +
+  geom_line(data = preditos, aes(x = dist, y = gamma)) +
+  theme_bw()
+my_fitted_semivar
+```
+
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- --> \### 18)
+Extraia os parâmetros dos modelos ajustados e adicione-os como uma
+anotação no semivariograma.
+
+``` r
+# Extraindo os parâmetros do modelo
+sse <- attr(modelo_ajustado, "SSErr")## Soma de Quadrado dos Resíduos
+c0 <- modelo_ajustado$psill[[1]]## Valor de Nugget
+patamar <- sum(modelo_ajustado$psill)## Valor de Patamar
+alcance <- modelo_ajustado$range[[2]]## Alcance
+
+## Nomes dos parâmetros
+nomes <- c("C0", "C0+C1", "Range", "SSE")
+
+## vetor de valores
+vetor_par <- c(c0, patamar, alcance, sse)
+
+## Plotando o semivariograma
+my_fitted_semivar +
+  annotate("text",x=rep(50,4),
+           y=seq(.8,1,.06),
+           label=paste0(nomes,"= ",round(vetor_par,4)),size=5) +
+  labs(x="h",
+       y = expression(paste(hat(gamma),"(h)")))
+```
+
+![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+## Resumo do realizado até aqui
+
+A ideia marcante da geoestatística é bem simples. Ela consiste nos
+seguintes passos:
+
+### 1º Passo
+
+Defina uma área/local $A$, considerada homogênea o suficiente para a
+garantir a interpolação dentro dela, ou seja,
+
+![](img/img-12.png)
+
+### 2º Passo
+
+Examine todos os dados medidos dentro de $A$ para calcular as
+características- $h$ da variabilidade espacial, isto é, calcule os
+valores do semivariograma experimental.
+
+![](img/img-13.png)
+
+### 3º Passo
+
+Modele o semivariograma experimental com uma função **avaliável** para
+todos os vetores de distância $h$.
+
+![](img/img-14.png)
+
+### Considerações finais sobre o semivariograma
+
+Os passos mais importantes e, por isto mesmo, os que mais trazem
+conseqüências em qualquer estudo geoestatístico são:
+
+**1º passo** - decisão de média ou estacionariedade,
+
+A decisão de estacionariedade está implícita em todas as estatísticas,
+ela não é particular da abordagem geoestatística. Esta decisão permite
+definir um conjunto de dados (área A) sobre os quais as médias
+experimentais e proporções serão calculadas e é assumido representativa
+da população como um todo, não de qualquer particular locação individual
+$(x \in A)$.
+
+#### Hipótese intrinseca de Matheron (1965)
+
+A hipótese intrínseca assume que o incremento
+
+$$
+Z(x+h) - Z(x)
+$$
+
+tem média zero, ou seja,
+
+$$
+E[Z(x+h) - Z(x)] = 0
+$$
+
+e uma variância finita que não depende do local $x$,
+
+$$
+Var[Z(x+h) - Z(x)] = E[Z(x+h) - Z(x)]^2 = 2\gamma(h)
+$$
+
+**3º passo** – a modelagem do semivariograma
+
+## 4º Passo - Krigagem Ordinária
 
 ![](img/img-D01.png)
 
