@@ -646,7 +646,7 @@ Modele o semivariograma experimental com uma função **avaliável** para todos 
 
 Os passos mais importantes e, por isto mesmo, os que mais trazem conseqüências em qualquer estudo geoestatístico são:
 
-**1º passo** - decisão de média ou estacionariedade,  
+#### Decisão de média ou estacionaridade
 
 A decisão de estacionariedade está implícita em todas as estatísticas, ela não é particular da abordagem geoestatística. Esta decisão permite definir um conjunto de dados (área A) sobre os quais as médias experimentais e proporções serão calculadas e é assumido representativa da população como um todo, não de qualquer particular locação individual $(x \in A)$. 
 
@@ -671,22 +671,147 @@ $$
 Var[Z(x+h) - Z(x)] = E[Z(x+h) - Z(x)]^2 = 2\gamma(h)
 $$
 
+#### Direções na geoestatística
+
+As convenções direcionais usadas na geoestatística são mostradas na Figura abaixo
+
+![](img/img-18.png)
+
+**MODELO ISOTRÓPICO** - Semivariograma só depende da distância $h$. Um único modelo modela a variabilidade em todas as direções. 
+
+![](img/img-19.png)
 
 
+**MODELO ANISOTRÓPICO** – A modelo aplicado ao semivariograma experimental depende da distância de separação e da direção.
 
-**3º passo**  – a modelagem do semivariograma
+![](img/img-20.png)
 
+O variograma ao longo da direção 30º, por exemplo, de um canal de sedimentação, apresentará menor variabilidade do que na direção 120º, perpendicular à continuidade, correspondentemente, é observado maior correlação na direção da sedimentação. 
 
-
-
-
+![](img/img-21.png)
 
 
 ## 4º Passo - Krigagem Ordinária
 
-![](img/img-D01.png)
+Estimativa em locais não amostrados
 
-## Referências
+Use este modelo $\hat{\gamma}(h)$, ou o modelo de covariância $C(h)$, para a tradicional técnica de regressão, de krigagem.
+
+![](img/img-22.png)
+
+#### Resumidamente: Passos da modelagem da variabilidade espacial
+
+![](img/img-00.png)
+
+Conhecido o semivariograma, e havendo dependência espacial entre as amostras pode-se estimar valores da propriedade $Z$ em qualquer ponto  do campo de estudo, sem tendência e com variância mínima.  O método de estimação é denominado de **KRIGAGEM**, nome dado por MATHERON (1963) em homenagem ao engenheiro de minas sul-africano KRIGE.
+
+### ESTIMAÇÃO LOCAL: colocação do problema
+
+![](img/img-23.png)
+### Estimação Local: Krigagem
+
+
+$$
+\hat{Z}(X_0) = \lambda_1Z(X_1) + \lambda_2Z(X_2)+ \cdots + \lambda_kZ(X_k) = \sum \limits_{i = 1}^k \lambda_iZ(X_i)
+$$
+
+Os pesos são escolhidos de forma que a estimativa $\hat{Z}(X_0)$ seja **não viciada** e a variância do erro $\sigma_e^2$ da estimativa seja menor que qualquer outra combinação linear dos valores observados, ou seja:
+
+$$
+E[\hat{Z}(X_0) - Z(X_0)] = 0 \text{ e } \\
+\sigma^2_e = Var[\hat{Z}(X_0) - Z(X_0)] = E[\hat{Z}(X_0) - Z(X_0)] \text{ seja mínima}
+$$
+
+Trabalhando algebricamente estas duas expressões, chegamos às expressões que forma o sistema de krigagem, que pode ser esrito em função do semivariograma $\gamma(h)$, sabendo-se que $\gamma(h) = C(0) - C(h)$
+
+$$
+\begin{cases}
+\sum \limits_i \lambda_i(x_i,x_j) - \mu = \gamma(x_i,x_0) i = 1,2, \cdots, N \\
+\sum \limits_i \lambda_i = 1
+\end{cases}
+$$
+
+E a variância da estimação fica:
+
+$$
+\sigma^2_{\hat{Z}(X_0)} = \sum \limits_i^N \lambda_i\gamma(X_i,X_0) + \mu
+$$
+
+Sistema de krigagem na notação matricial.
+
+
+**Matriz de semivariância entre as amostras**
+$$[\gamma]=\begin{bmatrix}
+\gamma(X_1,X_1) & \gamma(X_1,X_2) & \cdots & \gamma(X_1,X_N) & 1 \\
+\gamma(X_2,X_1) & \gamma(X_2,X_2) &  &\gamma(X_2,X_N) & 1 \\
+\vdots & & \ddots & \vdots & 1\\
+\gamma(X_N,X_1) & \gamma(X_N,X_2) & \cdots & \gamma(X_N,X_N) & 1 \\
+1 & 1 & 1 & 1 &0 \\
+\end{bmatrix}$$
+
+**Matriz de semivariância entre as amostras e o ponto a estimar**
+
+$$[b]=\begin{bmatrix}
+\gamma(X_1,X_0) \\
+\gamma(X_2,X_0) \\
+\vdots \\
+\gamma(X_N,X_0) \\
+1
+\end{bmatrix}$$
+
+**Matriz de ponderadores**
+
+$$[\lambda]=\begin{bmatrix}
+\lambda_1 \\
+\lambda_2    \\
+\vdots \\
+\lambda_N \\
+\mu
+\end{bmatrix}$$
+
+a Relação entre os sistema é escrita como:
+
+$$
+[\gamma][\lambda]=[b] \text{ ou seja: } \\
+$$
+
+$$
+\begin{bmatrix}
+\gamma(X_1,X_1) & \gamma(X_1,X_2) & \cdots & \gamma(X_1,X_N) & 1 \\
+\gamma(X_2,X_1) & \gamma(X_2,X_2) &  &\gamma(X_2,X_N) & 1 \\
+\cdots & & \ddots & \cdots & 1\\
+\gamma(X_N,X_1) & \gamma(X_N,X_2) & \cdots & \gamma(X_N,X_N) & 1 \\
+1 & 1 & 1 & 1 &0 \\
+\end{bmatrix} \begin{bmatrix}
+\lambda_1 \\
+\lambda_2    \\
+\cdots \\
+\lambda_N \\
+\mu
+\end{bmatrix}= \begin{bmatrix}
+\gamma(X_1,X_0) \\
+\gamma(X_2,X_0) \\
+\cdots \\
+\gamma(X_N,X_0) \\
+1
+\end{bmatrix}$$
+
+
+Então, 
+
+$$[\lambda] = [\gamma]^{-1}[b]$$
+
+cuja solunção única é 
+$$\hat{Z}(X_0) = \sum \limits_i^N \hat{\lambda}_iZ(X_i)$$ 
+
+e a expressão da variância da forma matricial fica:
+
+$$
+\sigma_e^2=[\gamma]^t[b]
+$$
+![](img/img-00.png)
+
+## 11 Referências
 
 GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for incorporating auxiliary information in the prediction of spatial variables. **J. Agric., Biol. Environ. Statis.**, 1: 17-39.
 
@@ -704,3 +829,8 @@ VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do solo**. 
 
 WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**. San Francisco: John Wiley & Sons, p. 315, 2009.
 
+# Agradecimentos
+
+A todos os participantes e integrantes do grupo de pesquisa.
+
+![](img/img-D01.png)
