@@ -719,13 +719,13 @@ $$\begin{cases}
 \hat{\gamma}(h) = Cte \text{ caso contrário }
 \end{cases}$$
 
-![](img/img-15.png)
+![](img/img-15.png) Semivariograma chamado de efeito pepita puro
 
 #### b) Modelo exponencial:
 
-\$\$ (h) = b(h)^c 0 \< c \< 2 h
+$$\hat{\gamma}(h) = b(h)^c \text{ com } 0 < c < 2 \text{ e } h \geq 0$$
 
-\$\$ ![](img/img-16.png)
+![](img/img-16.png)
 
 #### c) Modelo exponencial:
 
@@ -804,13 +804,115 @@ levemente ondulada.
 
 ### 17) Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma experimental anteriormente apresentado. Utilize as funções `fit.variogram`, `vgm` e `variogramLine`, pertencentes ao pacote `{gstat}`.
 
-## Ajuste Esférico
+``` r
+# Construção do semivariogrma pela função variogram do
+# pacote gstat
+# Recorte do banco de dados com x, y, e z
+df_aux <- dados_geo |>
+  filter(tratamento == "EU") |>
+  select(x, y, fco2) |>
+  rename(z = fco2) # mude aqui para outro atributo, se necessário
+class(df_aux)
+#> [1] "tbl_df"     "tbl"        "data.frame"
 
-## Ajuste Exponencial
 
-## Ajuste Gaussiano
+# temos que passar df_aux para SpatialData uma vez que
+# as funções do gstat trabalham com esse formato de dados
+sp::coordinates(df_aux) = ~ x + y
+head(df_aux)
+#>   coordinates     z
+#> 1      (0, 0) 5.164
+#> 2     (20, 0) 4.528
+#> 3     (40, 0) 5.048
+#> 4     (60, 0) 5.298
+#> 5     (80, 0) 6.576
+#> 6    (100, 0) 5.124
+class(df_aux)
+#> [1] "SpatialPointsDataFrame"
+#> attr(,"package")
+#> [1] "sp"
+mode(df_aux)
+#> [1] "S4"
+
+# criando a fórmula para o semivariograma
+form <- z ~ 1
+
+# criar o semivarigrama experimental
+semi_exp <- gstat::variogram(form, df_aux,
+                             cutoff=100,
+                             width = 5)
+semi_exp |>
+  ggplot(aes(x=dist, y=gamma)) +
+  geom_point(size=3) +
+  theme_bw() +
+  annotate("text",
+           x=semi_exp$dist,
+           y=semi_exp$gamma*0.98,
+           label = semi_exp$np)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+
+\#Modelagem - Modelo Esférico
+
+``` r
+# Modelagem - Modelo Esférico (aula)
+mod_ajust <- fit.variogram(semi_exp,
+                           vgm(model = "Sph",
+                               nugget=0.5,
+                               psill=1.8,
+                               range=50)
+                           )
+linha_preditos <- variogramLine(mod_ajust,
+                                maxdist = 100)
+plot(linha_preditos)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
+``` r
+semi_exp |>
+  ggplot(aes(x=dist, y=gamma)) +
+  geom_point(size=3) +
+  theme_bw()+
+  geom_line(data = linha_preditos,
+            aes(x=dist, y=gamma),
+            color="red")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-28-2.png)<!-- -->
+
+## Modelagem - Modelo Exponencial (casa)
+
+## Modelagem - Modelo Gaussiano (casa)
 
 ### 18) Extraia os parâmetros dos modelos ajustados e adicione-os como uma anotação no semivariograma.
+
+``` r
+# Extração dos parâmetros
+sse <- attr(mod_ajust, "SSErr") # soma quadrados resíduos
+nugget <- mod_ajust$psill[1] # efeito pepita C0
+sill <- sum(mod_ajust$psill) # patamar C0 + C1
+alcance <- mod_ajust$range[2]
+
+texto_par <- paste0(c("SQD","C0","C0+C1","a"),
+                    " = ",
+                    round(c(sse,nugget,sill,alcance),3)
+                    )
+
+semi_exp |>
+  ggplot(aes(x=dist, y=gamma)) +
+  geom_point(size=3) +
+  theme_bw()+
+  geom_line(data = linha_preditos,
+            aes(x=dist, y=gamma),
+            color="red") +
+  annotate("text",x=50,
+           y=seq(1,1.4,.12),
+           label = texto_par,size=6)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ## Resumo do realizado até aqui
 
@@ -956,10 +1058,11 @@ Sistema de krigagem na notação matricial.
 **Matriz de semivariância entre as amostras** $$[\gamma]=\begin{bmatrix}
 \gamma(X_1,X_1) & \gamma(X_1,X_2) & \cdots & \gamma(X_1,X_N) & 1 \\
 \gamma(X_2,X_1) & \gamma(X_2,X_2) &  &\gamma(X_2,X_N) & 1 \\
-\vdots & & \ddots & \vdots & 1\\
+\cdots & & \ddots & \cdots & 1\\
 \gamma(X_N,X_1) & \gamma(X_N,X_2) & \cdots & \gamma(X_N,X_N) & 1 \\
 1 & 1 & 1 & 1 &0 \\
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
 **Matriz de semivariância entre as amostras e o ponto a estimar**
 
@@ -1025,9 +1128,77 @@ $$
 
 ### 19) Crie a região de adensamento, ou seja, um novo arquivo contendo a posição geográfica (pares de coordenadas) onde será realizada a estimativa via krigagem ordinária.
 
+``` r
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x,y=y)) +
+  geom_point() +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+``` r
+
+menor_dist <- 1
+
+grid_adensado <- expand.grid(
+  x=seq(0,100,menor_dist),
+  y=seq(0,100,menor_dist)
+)
+
+dados_geo |>
+  filter(tratamento == "EU") |>
+  ggplot(aes(x=x,y=y)) +
+  geom_point() +
+  geom_point( data = grid_adensado,
+              aes(x=x,y=y),
+              color="blue",
+              size=1) +
+  theme_bw()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-30-2.png)<!-- -->
+
+``` r
+
+# tranformar o grid_adensado em um objeto
+# SpatiaData
+sp::coordinates(grid_adensado) = ~ x+ y
+```
+
 ### 20) Utilizando o algorítmo da KO, vamos estimar o atributo nos locais não amostrados (gradeado adensado).
 
+``` r
+ko <- gstat::krige(form, df_aux,grid_adensado,
+                   mod_ajust)
+#> [using ordinary kriging]
+```
+
 ### 21) Apresente os padrões espaciais (mapa de ko) e o mapa da estimativa do erro.
+
+``` r
+ko |>
+  as_tibble() |>
+  ggplot(aes(x=x,y=y)) +
+  geom_tile(aes(fill= var1.pred)) +
+  scale_fill_viridis_c() +
+  labs(title = "FCO2")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+
+``` r
+
+ko |>
+  as_tibble() |>
+  ggplot(aes(x=x,y=y)) +
+  geom_tile(aes(fill= var1.var)) +
+  scale_fill_viridis_c() +
+  labs(title = "FCO2 (desvios)")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-32-2.png)<!-- -->
 
 ## Referências
 
