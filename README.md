@@ -802,88 +802,15 @@ levemente ondulada.
 
 ### 16) Utilizando as funções `coordinates()` e `variogram()` dos pacotes `{sp}` e `{gstat}`, construa o semivariograma experimental $h$ vs $\gamma(h)$, não esqueça de adicionar o número de pares de pontos de cada valor estimado de semivariância para futuras inspeções.
 
-``` r
-# Criando o arquivo necessário somente x, y, e z
-df_aux <- dados_geo |> 
-  select(x, y, fco2) |> 
-  rename(z=fco2) 
-class(df_aux)
-#> [1] "tbl_df"     "tbl"        "data.frame"
-
-coordinates(df_aux) = ~x + y
-class(df_aux)
-#> [1] "SpatialPointsDataFrame"
-#> attr(,"package")
-#> [1] "sp"
-```
-
-``` r
-# Criando a fórmula para
-formula <- z~1
-
-# Criando o semivariograma experimental
-semivariograma_experimental <- variogram(formula, data=df_aux,
-                                         width = 9,
-                                         cutoff=100,
-                                         cressie=TRUE)
-semivariograma_experimental |> 
-  ggplot(aes(x=dist,y=gamma)) +
-  geom_point() +
-  theme_bw() +
-  annotate("text", x=semivariograma_experimental$dist, 
-           y=semivariograma_experimental$gamma*.98, 
-           label = semivariograma_experimental$np)
-```
-
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- --> \### 17)
-Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma
-experimental anteriormente apresentado. Utilize as funções
-`fit.variogram`, `vgm` e `variogramLine`, pertencentes ao pacote
-`{gstat}`.
+### 17) Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma experimental anteriormente apresentado. Utilize as funções `fit.variogram`, `vgm` e `variogramLine`, pertencentes ao pacote `{gstat}`.
 
 ## Ajuste Esférico
 
-``` r
-modelo_ajustado <- fit.variogram(semivariograma_experimental,
-                                 vgm(model = "Sph",nugget = 0.5,
-                                     psill = 1.2, range = 50 ))
-preditos <- variogramLine(object = modelo_ajustado, maxdist = 100)
+## Ajuste Exponencial
 
-my_fitted_semivar <- semivariograma_experimental |> 
-  ggplot(aes(x=dist,y=gamma)) +
-  geom_point() +
-  geom_line(data = preditos, aes(x = dist, y = gamma)) +
-  theme_bw()
-my_fitted_semivar
-```
+## Ajuste Gaussiano
 
-![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- --> \### 18)
-Extraia os parâmetros dos modelos ajustados e adicione-os como uma
-anotação no semivariograma.
-
-``` r
-# Extraindo os parâmetros do modelo
-sse <- attr(modelo_ajustado, "SSErr")## Soma de Quadrado dos Resíduos
-c0 <- modelo_ajustado$psill[[1]]## Valor de Nugget
-patamar <- sum(modelo_ajustado$psill)## Valor de Patamar
-alcance <- modelo_ajustado$range[[2]]## Alcance
-
-## Nomes dos parâmetros
-nomes <- c("C0", "C0+C1", "Range", "SSE")
-
-## vetor de valores
-vetor_par <- c(c0, patamar, alcance, sse)
-
-## Plotando o semivariograma
-my_fitted_semivar +
-  annotate("text",x=rep(50,4),
-           y=seq(.8,1,.06),
-           label=paste0(nomes,"= ",round(vetor_par,4)),size=5) +
-  labs(x="h",
-       y = expression(paste(hat(gamma),"(h)")))
-```
-
-![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+### 18) Extraia os parâmetros dos modelos ajustados e adicione-os como uma anotação no semivariograma.
 
 ## Resumo do realizado até aqui
 
@@ -1092,9 +1019,17 @@ e a expressão da variância da forma matricial fica:
 
 $$
 \sigma_e^2=[\gamma]^t[b]
-$$ ![](img/img-00.png)
+$$
 
-## 11 Referências
+![](img/img-00.png)
+
+### 19) Crie a região de adensamento, ou seja, um novo arquivo contendo a posição geográfica (pares de coordenadas) onde será realizada a estimativa via krigagem ordinária.
+
+### 20) Utilizando o algorítmo da KO, vamos estimar o atributo nos locais não amostrados (gradeado adensado).
+
+### 21) Apresente os padrões espaciais (mapa de ko) e o mapa da estimativa do erro.
+
+## Referências
 
 GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for
 incorporating auxiliary information in the prediction of spatial
@@ -1125,7 +1060,7 @@ Solo, 2000, v.1, p. 1 – 53.
 WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**.
 San Francisco: John Wiley & Sons, p. 315, 2009.
 
-# Agradecimentos
+## Agradecimentos
 
 A todos os participantes e integrantes do grupo de pesquisa.
 
