@@ -1055,14 +1055,15 @@ $$
 
 Sistema de krigagem na notação matricial.
 
-**Matriz de semivariância entre as amostras** $$[\gamma]=\begin{bmatrix}
+**Matriz de semivariância entre as amostras**
+
+$$[\gamma]=\begin{bmatrix}
 \gamma(X_1,X_1) & \gamma(X_1,X_2) & \cdots & \gamma(X_1,X_N) & 1 \\
 \gamma(X_2,X_1) & \gamma(X_2,X_2) &  &\gamma(X_2,X_N) & 1 \\
 \cdots & & \ddots & \cdots & 1\\
 \gamma(X_N,X_1) & \gamma(X_N,X_2) & \cdots & \gamma(X_N,X_N) & 1 \\
 1 & 1 & 1 & 1 &0 \\
-\end{bmatrix}
-$$
+\end{bmatrix}$$
 
 **Matriz de semivariância entre as amostras e o ponto a estimar**
 
