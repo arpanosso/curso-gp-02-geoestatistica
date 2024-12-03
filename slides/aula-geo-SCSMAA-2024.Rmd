@@ -85,16 +85,21 @@ De acordo com estas evidências os dois conjuntos de dados são bastante semelha
 ![](../img/img-02.png)
 
 Comparação de seus respectivos gráficos de contornos (padrões espaciais).
+
 --
-  * O conjunto $A$ é mais acidentado que o conjunto de dados $B$.
+  + O conjunto $A$ é mais acidentado que o conjunto de dados $B$.
+  
 --
-  * Não se pode afirmar que o conjunto de dados $A$ é mais variável do que o conjunto $B$, haja visto que os desvios padrões dos dois conjuntos de dados foram iguais.
+  + Não se pode afirmar que o conjunto de dados $A$ é mais variável do que o conjunto $B$, haja visto que os desvios padrões dos dois conjuntos de dados foram iguais.
+  
 --
-  * O conjunto $A$ muda mais rapidamente no espaço do que o conjunto $B$.
+  + O conjunto $A$ muda mais rapidamente no espaço do que o conjunto $B$.
+  
 --
-  * As zonas contínuas altos valores (em vermelho) e as zonas de baixos valores (em azul) são, em média, menores para o conjunto $A$ do que do conjunto $B$.
+  + As zonas contínuas altos valores (em vermelho) e as zonas de baixos valores (em azul) são, em média, menores para o conjunto $A$ do que do conjunto $B$.
+  
 --
-  * Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
+  + Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
 
 ---
 
@@ -123,23 +128,40 @@ O variograma (ou semivariograma) é uma estatística descritiva quantitativa que
 
 Em outras palavras, a análise variográfica caracteriza a (auto)correlação espacial.
 
-## Descrição do Experimento
+---
 
-Para esse cruso foi selecionado um estudo desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+### Descrição do Experimento
 
-![](img/img-04.png)
+Para esse curso foi selecionado um estudo desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+
+![](../img/img-04.png)
+---
 
 No seu histórico, as áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de 1970, quando, em 1978, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até 1986. Durante os anos de 1986-1987, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de 1986 e a área de SI foi formada em dezembro de 1987.
 
 No momento da realização das avaliações de emissão de CO~2~ do solo (FCO2) as áreas já haviam passado por mais de $30$ anos de mudança de conversão. As determinações foram realizadas no período de 03 de fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
 
-![](img/img-05.png)
+---
+
+![](../img/img-05.png)
 
 Ao final do período de determinação da emissão de CO~2~ do solo, as amostras de solo foram coletadas e todos os atributos físicos e químicos foram determinados.
 
 Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto (EU), ano de 2017, Município de Selvíria, Mato Grosso do Sul.
 
-![](img/img-06.png)
+---
+
+![](../img/img-06.png)
+---
+
+## Mãos à obra
+
+
+```{r, out.width="60%"}
+knitr::include_graphics("https://media1.tenor.com/m/iCqG_iT-h48AAAAC/bills-ugh.gif")
+```
+
+---
 
 ## Análise Exploratória
 

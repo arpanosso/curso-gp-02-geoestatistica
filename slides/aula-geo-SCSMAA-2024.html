@@ -95,16 +95,21 @@ De acordo com estas evidências os dois conjuntos de dados são bastante semelha
 ![](../img/img-02.png)
 
 Comparação de seus respectivos gráficos de contornos (padrões espaciais).
+
 --
-  * O conjunto `\(A\)` é mais acidentado que o conjunto de dados `\(B\)`.
+  + O conjunto `\(A\)` é mais acidentado que o conjunto de dados `\(B\)`.
+  
 --
-  * Não se pode afirmar que o conjunto de dados `\(A\)` é mais variável do que o conjunto `\(B\)`, haja visto que os desvios padrões dos dois conjuntos de dados foram iguais.
+  + Não se pode afirmar que o conjunto de dados `\(A\)` é mais variável do que o conjunto `\(B\)`, haja visto que os desvios padrões dos dois conjuntos de dados foram iguais.
+  
 --
-  * O conjunto `\(A\)` muda mais rapidamente no espaço do que o conjunto `\(B\)`.
+  + O conjunto `\(A\)` muda mais rapidamente no espaço do que o conjunto `\(B\)`.
+  
 --
-  * As zonas contínuas altos valores (em vermelho) e as zonas de baixos valores (em azul) são, em média, menores para o conjunto `\(A\)` do que do conjunto `\(B\)`.
+  + As zonas contínuas altos valores (em vermelho) e as zonas de baixos valores (em azul) são, em média, menores para o conjunto `\(A\)` do que do conjunto `\(B\)`.
+  
 --
-  * Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
+  + Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
 
 ---
 
@@ -133,23 +138,38 @@ O variograma (ou semivariograma) é uma estatística descritiva quantitativa que
 
 Em outras palavras, a análise variográfica caracteriza a (auto)correlação espacial.
 
-## Descrição do Experimento
+---
 
-Para esse cruso foi selecionado um estudo desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+### Descrição do Experimento
 
-![](img/img-04.png)
+Para esse curso foi selecionado um estudo desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+
+![](../img/img-04.png)
+---
 
 No seu histórico, as áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de 1970, quando, em 1978, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até 1986. Durante os anos de 1986-1987, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de 1986 e a área de SI foi formada em dezembro de 1987.
 
 No momento da realização das avaliações de emissão de CO~2~ do solo (FCO2) as áreas já haviam passado por mais de `\(30\)` anos de mudança de conversão. As determinações foram realizadas no período de 03 de fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
 
-![](img/img-05.png)
+---
+
+![](../img/img-05.png)
 
 Ao final do período de determinação da emissão de CO~2~ do solo, as amostras de solo foram coletadas e todos os atributos físicos e químicos foram determinados.
 
 Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto (EU), ano de 2017, Município de Selvíria, Mato Grosso do Sul.
 
-![](img/img-06.png)
+---
+
+![](../img/img-06.png)
+---
+
+## Mãos à obra
+
+
+&lt;img src="https://media1.tenor.com/m/iCqG_iT-h48AAAAC/bills-ugh.gif" width="60%" /&gt;
+
+---
 
 ## Análise Exploratória
 
@@ -248,15 +268,15 @@ Table: Data summary
 
 ### 5) Apresente o gradeado amostral.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 Observe a disposição dos pontos amostrais.
 
 ### 6) Mapeie a emissão de CO~2~ pelo tamanho e a cor dos marcadores de pontos.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
-
-
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
 
@@ -303,11 +323,11 @@ Desvios significativos da normalidade e da estacionariedade podem causar problem
 
 ### 9) Crie o histograma da variável `mo`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ### 11) Realize o teste de normalidade dos dados para `mo`.
 
@@ -321,9 +341,9 @@ Desvios significativos da normalidade e da estacionariedade podem causar problem
 
 ### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
-
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
 
 ### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
 
@@ -397,13 +417,13 @@ $$
 
 ### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
-
-
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
 
 
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
 ## Definições em geoestatística
 
 &gt; Geoestatística lida com dados autocorrelacionados espacialmente.
@@ -428,17 +448,17 @@ Esta distância é geralmente denominada de `lag`, como usado nas series tempora
 #&gt; $ areia     &lt;int&gt; 30, 29, 20, 19, 20, 15, 12, 10, 8, 8, 11, 15, 12, 13, 12, 12…
 ```
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
 
 ![](img/img-25.png)
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
 
 ![](img/img-26.png)
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
-
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
 
 &gt; "A dispersão dos pontos em torno da linha de 45º, aumenta com o aumento da distância de separação entre os pontos. Esta dispersão reflete a variabilidade entre esses valores. Reflete a dissimilaridade dos dados para as distâncias h". 
 
@@ -481,7 +501,7 @@ e
 
 
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
 
 recomenda-se um núemro de pares de ponto em uma dada distância de separação `\(h\)` sempre maior que `\(30\)`.
 
@@ -491,7 +511,7 @@ recomenda-se um núemro de pares de ponto em uma dada distância de separação 
 
 
 #### 15.5) Construa o semivariograma experimental `\(h\)` vs `\(\gamma(h)\)`.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
 
 O gráfico de acima é denominado **semivariograma experimental**, o qual exibe um comportamento puramente aleatório ou sistemático que pode ser descrito por modelos matemáticos teóricos (linear, esférico, exponencial, gaussiano e lei de potência).
 
@@ -595,17 +615,17 @@ O valor `\(C_1\)` representa a estrutura de variabilidade espacial dos dados.
 #&gt; [1] "S4"
 ```
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
 
 #Modelagem - Modelo Esférico
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-32-2.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-33-2.png)&lt;!-- --&gt;
 
 ## Modelagem - Modelo Exponencial (casa)
 
 ## Modelagem - Modelo Gaussiano (casa)
 
 ### 18) Extraia os parâmetros dos modelos ajustados e adicione-os como uma anotação no semivariograma.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
 
 
 
@@ -807,7 +827,7 @@ $$
 ![](img/img-00.png)
 
 ### 19) Crie a região de adensamento, ou seja, um novo arquivo contendo a posição geográfica (pares de coordenadas) onde será realizada a estimativa via krigagem ordinária.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-34-2.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-35-2.png)&lt;!-- --&gt;
 
 
 ### 20) Utilizando o algorítmo da KO, vamos estimar o atributo nos locais não amostrados (gradeado adensado).
@@ -820,7 +840,7 @@ $$
 
 ### 21) Apresente os padrões espaciais (mapa de ko) e o mapa da estimativa do erro.
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-36-2.png)&lt;!-- --&gt;
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-37-2.png)&lt;!-- --&gt;
 
 ## REFERÊNCIAS
 
