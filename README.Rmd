@@ -2,6 +2,7 @@
 title: "Sequestro de Carbono no Solo: Múltiplas Abordagens de Avaliação"
 subtitle: "Introdução à Geoestatística: Conceitos e aplicações na amostragem de atributos do solo"
 author: "Alan Rodrigo Panosso"
+institute: "Pós-Graduação em Agronomia (Ciência do Solo)"
 date: "05/12/2024"
 output:
   html_document: default
@@ -15,11 +16,10 @@ knitr::opts_chunk$set(
   warning = FALSE, 
   error = FALSE, 
   message = FALSE,
+  echo = FALSE,
   comment = "#>"
 )
 ```
-
-
 
 ## INTRODUÇÃO
 
@@ -29,10 +29,7 @@ A Geoestatística é uma ferramenta na análise espacial de dados, desempenhando
 
 É definida como um ramo da estatística aplicada que lida com a análise e interpretação de dados espaciais. Ela permite a modelagem da variabilidade espacial de fenômenos, descrevendo padrões espaciais, correlações e distribuições geográficas. No contexto agronômico, é uma ferramenta para compreender a heterogeneidade do solo e outros fatores que influenciam nos mais diversos fenômenos associados.
 
-O objetivo desta palestra/curso é iniciar os estudos a respeito dos princípios básicos da Geoestatística, focada na análise e interpretação de interpretar dados espaciais. Ao final do curso, os participantes serão capazes de aplicar métodos geoestatísticos para mapear variáveis do solo, identificar padrões de distribuição espacial e tomar decisões informadas sobre práticas agrícolas.
-
 Os métodos da estatística clássica são muito utilizados em Ciências da Terra, principalmente em Agronomia:
-
 
 ### Os procedimentos gerais utilizados na estatística clássica são: 
 
@@ -96,6 +93,9 @@ Podemos entender a geoestatística como estudos de fenômenos que variam no espa
 
 Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas incluindo geosfísica, ciências agronômicas, hidrologia e engenharia ambiental. A parte central da geoestatística é a ideia de que **medidas mais próximas tendem a serem mais parecidas do que valores observados em locais distantes**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (GOTWAY; HARTFORD).
 
+Um conceito chave na Análise Espacial é a dependência espacial, e sua formulação matemática, a autocorrelação espacial. Estas noções partem do que Waldo Tobler chama de a "primeira lei da geografia": 
+
+  > **"todas as coisas são parecidas, mas coisas mais próximas se parecem mais que coisas mais distantes"**.
 
 ## O variograma 
 
@@ -190,9 +190,9 @@ Observe a disposição dos pontos amostrais.
 dados_geo |>
   filter(tratamento == "EU") |>
   mutate(
-    fco2_class = cut(fco2,4)
+    mo_class = cut(mo,4)
   ) |>
-  ggplot(aes(x=x, y=y, color=fco2_class, size=fco2_class)) +
+  ggplot(aes(x=x, y=y, color=mo_class, size=mo_class)) +
   geom_point() +
   theme_bw() +
   scale_color_viridis_d()
@@ -203,15 +203,15 @@ dados_geo |>
 # Mostrar os dois gradeados....
 dados_geo |>
   mutate(
-    fco2_class = cut(fco2,4)
+    mo_class = cut(mo,4)
   ) |>
   ggplot(aes(x=x, y=y,
-             color=fco2_class,
-             size=fco2_class)) +
+             color=mo_class,
+             size=mo_class)) +
   geom_point() +
   theme_bw() +
   scale_color_viridis_d() +
-  facet_wrap(~tratamento)
+  facet_wrap(~tratamento, scale = "free",ncol=1)
 ```
 
 ### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
@@ -222,14 +222,14 @@ dados_geo |>
   filter(tratamento == "EU") |>
   summarise(
     N = n(),
-    Media = mean(fco2, na.rm = TRUE),
-    Mediana = median(fco2, na.rm = TRUE),
-    Menor = min(fco2, na.rm = TRUE),
-    Maior = max(fco2, na.rm = TRUE),
-    Variancia = var(fco2, na.rm = TRUE),
-    Desvio_Padrao = sd(fco2, na.rm = TRUE),
-    Assimetria = agricolae::skewness(fco2),
-    Curtose = agricolae::kurtosis(fco2),
+    Media = mean(mo, na.rm = TRUE),
+    Mediana = median(mo, na.rm = TRUE),
+    Menor = min(mo, na.rm = TRUE),
+    Maior = max(mo, na.rm = TRUE),
+    Variancia = var(mo, na.rm = TRUE),
+    Desvio_Padrao = sd(mo, na.rm = TRUE),
+    Assimetria = agricolae::skewness(mo),
+    Curtose = agricolae::kurtosis(mo),
     CV = 100*Desvio_Padrao/Media
   )
 ```
@@ -245,6 +245,7 @@ dados_geo |>
     )
   )
 ```
+
 ## Premissas ou pressupostos da análise geoestatística.
 
 A análise geoestatística é baseada na teoria das **variáveis regionalizadas**, que é uma função numérica com distribuição espacial, que varia de um ponto a outro com continuidade aparente, mas cujas variações não podem ser representadas por uma função matemática simples (MATHERON, 1963). 
@@ -264,23 +265,23 @@ Em resumo, temos que os métodos geoestatísticos são ótimos quando os dados s
 Desvios significativos da normalidade e da estacionariedade podem causar problemas, portanto é sempre importante começar a análise estudando o histograma ou algum gráfico similar para checar a normalidade e o mapa dos valores no espaço para checar a ocorrência de tendências significativas. 
 
 
-### 9) Crie o histograma da variável `fco2`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
+### 9) Crie o histograma da variável `mo`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
 
 ```{r}
-dados_geo |>
+mo_qnt <- dados_geo |>
   filter(tratamento == "EU") |>
-  pull(fco2) |>
-  quantile() # median()  mean()
+  pull(mo) |>
+  summary() # median()  mean()
 
 
 dados_geo |>
   filter(tratamento == "EU") |>
-  ggplot(aes(x=fco2)) +
+  ggplot(aes(x=mo)) +
   geom_histogram(bins=15,fill="lightgray",color="black") +
   theme_bw() +
-  geom_vline(xintercept = c(4.65, 4.53, 3.67, 5.36),
+  geom_vline(xintercept = mo_qnt[-c(1,6)],
              linetype=2,
-             color= c("red","blue" ,"blue" ,"blue"),
+             color= c("blue","blue" ,"red" ,"blue"),
              lwd = 1)
 
 ```
@@ -290,17 +291,17 @@ dados_geo |>
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  ggplot(aes(sample = fco2)) +
+  ggplot(aes(sample = mo)) +
   stat_qq() +
   stat_qq_line(color="blue",lwd=2) +
   theme_bw()
 ```
 
-### 11) Realize o teste de normalidade dos dados para `fco2`.
+### 11) Realize o teste de normalidade dos dados para `mo`.
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  pull(fco2) |>
+  pull(mo) |>
   shapiro.test() # teste de normalidade
 ```
 
@@ -309,7 +310,7 @@ dados_geo |>
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  ggplot(aes(x=x, y=fco2)) +
+  ggplot(aes(x=x, y=mo)) +
   geom_point() +
   theme_bw()
 ```
@@ -317,7 +318,7 @@ dados_geo |>
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  ggplot(aes(x=y, y=fco2)) +
+  ggplot(aes(x=y, y=mo)) +
   geom_point() +
   theme_bw()
 ```
@@ -326,7 +327,7 @@ dados_geo |>
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  lm(formula = fco2 ~ x) |>
+  lm(formula = mo ~ x) |>
   summary.lm()
 ```
 
@@ -334,7 +335,7 @@ dados_geo |>
 ```{r}
 dados_geo |>
   filter(tratamento == "EU") |>
-  lm(formula = fco2 ~ y) |>
+  lm(formula = mo ~ y) |>
   summary.lm()
 ```
 
@@ -394,12 +395,82 @@ dados_geo |>
 > Geoestatística lida com dados autocorrelacionados espacialmente.
 
 
-> Autocorrelação: correlação entre elementos de uma série  com outros elementos da mesma série separados por uma uma determinada distância. (Oxford American Dictionary)
+> Autocorrelação: correlação entre elementos de uma série  com outros elementos da mesma série separados por uma  determinada distância. (Oxford American Dictionary)
 
 Covariância e a correlação são medidas de similaridade entre duas variáveis. Para estender este conceito para medidas de similaridade espacial, considere um gráfico de dispersão em que os pares de dados representam medidas da mesma variável separadas por uma distância $h$ uma da outra. 
 
 Esta distância é geralmente denominada de `lag`, como usado nas series temporais.
 
+```{r}
+transecto <- read_rds("data/transecto.rds")
+glimpse(transecto)
+transecto |> 
+  filter( y == 0) |> 
+  ggplot(aes(x=x,y=arg)) +
+  geom_line() +
+  theme_bw()
+```
+
+![](img/img-25.png)
+
+```{r}
+transecto |> 
+  filter( y == 0) |> 
+  select(x,arg) |> 
+  mutate(
+    arg_lag = create_lag(arg,1)
+  ) |> 
+    drop_na() |> 
+  ggplot(aes(x=arg,y=arg_lag)) +
+  geom_point() +
+  theme_bw() +
+  geom_smooth(method = "lm", 
+              se=FALSE,
+              formula = 'y~x' )
+```
+
+![](img/img-26.png)
+
+```{r}
+transecto |> 
+  filter( y == 0) |> 
+  select(x,arg) |> 
+  mutate(
+    arg_lag = create_lag(arg,4)
+  ) |> 
+    drop_na() |> 
+  ggplot(aes(x=arg,y=arg_lag)) +
+  geom_point() +
+  theme_bw() +
+  geom_smooth(method = "lm", 
+              se=FALSE,
+              formula = 'y~x' )
+```
+
+```{r}
+transecto |> 
+  filter( y == 0) |> 
+  select(x,arg) |> 
+  mutate(
+    arg_lag_1 = create_lag(arg,1),
+    arg_lag_3 = create_lag(arg,3),
+    arg_lag_5 = create_lag(arg,5),
+    arg_lag_7 = create_lag(arg,7),
+    arg_lag_9 = create_lag(arg,9),
+    arg_lag_11 = create_lag(arg,11),
+    arg_lag_13 = create_lag(arg,13),
+    arg_lag_15 = create_lag(arg,15),
+    arg_lag_17 = create_lag(arg,17)
+  ) |> 
+    drop_na() |> 
+  select(-x) |> 
+  cor() |> 
+  corrplot(type = "upper")
+```
+
+> "A dispersão dos pontos em torno da linha de 45º, aumenta com o aumento da distância de separação entre os pontos. Esta dispersão reflete a variabilidade entre esses valores. Reflete a dissimilaridade dos dados para as distâncias h". 
+
+### No mapeamento em duas dimensões
 
 ![](img/img-07.png)
 
@@ -923,7 +994,7 @@ ko |>
   labs(title = "FCO2 (desvios)")
 ```
 
-## Referências
+## REFERÊNCIAS
 
 GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for incorporating auxiliary information in the prediction of spatial variables. **J. Agric., Biol. Environ. Statis.**, 1: 17-39.
 

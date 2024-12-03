@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Sequestro de Carbono no Solo: Múltiplas Abordagens de Avaliação</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Alan Rodrigo Panosso alan.panosso@unesp.br" />
+    <meta name="date" content="2024-05-12" />
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Sequestro de Carbono no Solo: Múltiplas Abordagens de Avaliação
+]
+.subtitle[
+## Introdução à Geoestatística: Conceitos e aplicações na amostragem de atributos do solo
+]
+.author[
+### Alan Rodrigo Panosso <a href="mailto:alan.panosso@unesp.br" class="email">alan.panosso@unesp.br</a>
+]
+.institute[
+### Pós-Graduação em Agronomia (Ciência do Solo)
+]
+.date[
+### 05/12/2024
+]
+
+---
+
+
+
+&lt;!-- README.md is generated from README.Rmd. Please edit that file --&gt;
+
+
+
+## INTRODUÇÃO
+
+### Motivação
+
+A Geoestatística é uma ferramenta na análise espacial de dados, desempenhando um importante papel na agricultura moderna. Ela combina princípios estatísticos com informações geográficas para fornecer uma compreensão mais profunda da variabilidade espacial de várias variáveis ligadas ao solo, às plantas e mesmo à atmosfera. 
+
+É definida como um ramo da estatística aplicada que lida com a análise e interpretação de dados espaciais. Ela permite a modelagem da variabilidade espacial de fenômenos, descrevendo padrões espaciais, correlações e distribuições geográficas. No contexto agronômico, é uma ferramenta para compreender a heterogeneidade do solo e outros fatores que influenciam nos mais diversos fenômenos associados.
+
+Os métodos da estatística clássica são muito utilizados em Ciências da Terra, principalmente em Agronomia:
+
+---
+
+### Os procedimentos gerais utilizados na estatística clássica são: 
+
+  + Selecionar um local típico ou representativo;
+
+  + Retirar amostras ao acaso para evitar  tendências;
+
+  + Evitar locais espacialmente variáveis para evitar erros;
+
+  + Variabilidade é ruim;
+
+  + Variabilidade é erro;
+
+  + Conduzir o experimento num local típico que  represente um solo particular; etc.
+
+---
+
+### As Hipóteses básicas nas quais a maioria dos métodos da estatística clássica se baseiam são: 
+
+  + Assumir uma distribuição de frequência;  
+
+  + Erros de observações têm média zero;  
+
+  + Os erros são independentes.  
+
+Considere os dois conjuntos de dados `\(A\)` e `\(B\)` e suas respectivas estatísticas básicas.
+
+Estatística |	A	| B 
+:---| :---: | :---:
+n	| `\(15251\)`	| `\(15251\)`
+média | 	`\(100,0\)`	| `\(100,0\)`
+desvio padrão	| `\(20,0\)`	| `\(20,0\)`
+mediana	| `\(100,35\)`	| `\(100,92\)`
+Percentil 10	| `\(73,89\)`	| `\(73,95\)`
+Percentil  90	| `\(125,61\)`	| `\(124,72\)`
+
+---
+
+![](../img/img-01.png)
+
+De acordo com estas evidências os dois conjuntos de dados são bastante semelhantes.
+
+---
+
+![](../img/img-02.png)
+
+Comparação de seus respectivos gráficos de contornos (padrões espaciais).
+--
+  * O conjunto `\(A\)` é mais acidentado que o conjunto de dados `\(B\)`.
+--
+  * Não se pode afirmar que o conjunto de dados `\(A\)` é mais variável do que o conjunto `\(B\)`, haja visto que os desvios padrões dos dois conjuntos de dados foram iguais.
+--
+  * O conjunto `\(A\)` muda mais rapidamente no espaço do que o conjunto `\(B\)`.
+--
+  * As zonas contínuas altos valores (em vermelho) e as zonas de baixos valores (em azul) são, em média, menores para o conjunto `\(A\)` do que do conjunto `\(B\)`.
+--
+  * Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
+
+---
+
+  &gt; **Portanto, não é  surpresa que as estatísticas comuns falhem em reconhecer as diferenças da variável respostas dos dois exemplos de conjuntos de dados, isso porque a estatística descritiva e os histogramas não incorporam a localização espacial dos dados em seus cálculos**.  
+
+
+---
+
+## Definição da Geoestatística
+
+Podemos entender a geoestatística como estudos de fenômenos que variam no espaço e/ou no tempo, ou seja, é uma coleção de técnicas numéricas, que lidam com a caracterização de atributos espaciais, permitindo a descrição da continuidade espacial de fenômenos naturais e fornece adaptações das técnicas da regressão para o entendimento desta continuidade (ISAAKS; SRIVASTAVA, 1989; GOOVAERTS, 1997). 
+
+Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas incluindo geosfísica, ciências agronômicas, hidrologia e engenharia ambiental. A parte central da geoestatística é a ideia de que **medidas mais próximas tendem a serem mais parecidas do que valores observados em locais distantes**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (GOTWAY; HARTFORD).
+
+Um conceito chave na Análise Espacial é a dependência espacial, e sua formulação matemática, a autocorrelação espacial. Estas noções partem do que Waldo Tobler chama de a "primeira lei da geografia": 
+
+  &gt; **"todas as coisas são parecidas, mas coisas mais próximas se parecem mais que coisas mais distantes"**.
+
+---
+
+### O variograma 
+
+O variograma (ou semivariograma) é uma estatística descritiva quantitativa que pode ser representada graficamente de tal forma que caracteriza a continuidade espacial de um conjunto de dados.  
+
+![](../img/img-03.png)
+
+Em outras palavras, a análise variográfica caracteriza a (auto)correlação espacial.
+
+## Descrição do Experimento
+
+Para esse cruso foi selecionado um estudo desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquisa e Extensão (FEPE), da Faculdade de Engenharia de Ilha Solteira (FEIS - UNESP), localizada no município de Selvíria, estado do Mato Grosso do Sul.
+
+![](img/img-04.png)
+
+No seu histórico, as áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de 1970, quando, em 1978, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até 1986. Durante os anos de 1986-1987, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de 1986 e a área de SI foi formada em dezembro de 1987.
+
+No momento da realização das avaliações de emissão de CO~2~ do solo (FCO2) as áreas já haviam passado por mais de `\(30\)` anos de mudança de conversão. As determinações foram realizadas no período de 03 de fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
+
+![](img/img-05.png)
+
+Ao final do período de determinação da emissão de CO~2~ do solo, as amostras de solo foram coletadas e todos os atributos físicos e químicos foram determinados.
+
+Aspectos gerais das áreas de estudo, silvipastoril (SI) e eucalipto (EU), ano de 2017, Município de Selvíria, Mato Grosso do Sul.
+
+![](img/img-06.png)
+
+## Análise Exploratória
+
+Um estudo clássico de geoestatística normalmente começa com uma descrição detalhada da análise exploratória dos dados (mapas espaciais, histogramas). Para isso vamos realizas análise descritiva da variável emissão de CO~2~ do solo na área de eucalipto. ([OLIVEIRA, 2018](https://repositorio.unesp.br/bitstreams/a13ca7aa-da94-4701-89aa-2bd2c8b4442d/download) )
+
+
+### 1) Carregue os pacotes necessários para as analises
+
+
+
+### 2) Leia o banco de dados `geo_fco2.rds` disponível na pasta `data`. Utilize as funções `glimpse` e `skim`, dos pacotes `{dplyr}` e `{skimr}` para a apresentação de um resumo inicial do banco de dados.
+
+
+
+```
+#&gt; Rows: 188
+#&gt; Columns: 11
+#&gt; $ tratamento &lt;chr&gt; "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU", "EU",…
+#&gt; $ id         &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, …
+#&gt; $ x          &lt;dbl&gt; 0, 20, 40, 60, 80, 100, 10, 15, 20, 25, 30, 50, 55, 60, 65,…
+#&gt; $ y          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1…
+#&gt; $ fco2       &lt;dbl&gt; 5.164, 4.528, 5.048, 5.298, 6.576, 5.124, 10.356, 5.044, 5.…
+#&gt; $ ts         &lt;dbl&gt; 23.98, 24.68, 24.36, 24.56, 24.48, 24.48, 25.18, 24.86, 25.…
+#&gt; $ us         &lt;dbl&gt; 11.664611, 6.956307, 9.709750, 6.726249, 9.388142, 8.494171…
+#&gt; $ mo         &lt;dbl&gt; 31, 32, 39, 38, 29, 31, 27, 29, 22, 24, 29, 24, 35, 28, 43,…
+#&gt; $ p_h        &lt;dbl&gt; 4.4, 3.8, 3.7, 3.9, 4.0, 4.0, 3.7, 3.9, 3.8, 3.8, 3.9, 4.2,…
+#&gt; $ p_resina   &lt;dbl&gt; 3, 6, 6, 5, 4, 5, 5, 4, 4, 4, 5, 4, 9, 5, 6, 7, 5, 3, 4, 3,…
+#&gt; $ k          &lt;dbl&gt; 0.8, 1.9, 1.4, 0.9, 0.9, 0.6, 1.1, 0.8, 0.7, 0.7, 1.0, 0.8,…
+```
+
+
+Table: Data summary
+
+|                         |          |
+|:------------------------|:---------|
+|Name                     |dados_geo |
+|Number of rows           |188       |
+|Number of columns        |11        |
+|_______________________  |          |
+|Column type frequency:   |          |
+|character                |1         |
+|numeric                  |10        |
+|________________________ |          |
+|Group variables          |None      |
+
+
+**Variable type: character**
+
+|skim_variable | n_missing| complete_rate| min| max| empty| n_unique| whitespace|
+|:-------------|---------:|-------------:|---:|---:|-----:|--------:|----------:|
+|tratamento    |         0|             1|   2|   2|     0|        2|          0|
+
+
+**Variable type: numeric**
+
+|skim_variable | n_missing| complete_rate|  mean|    sd|    p0|   p25|   p50|   p75|   p100|hist  |
+|:-------------|---------:|-------------:|-----:|-----:|-----:|-----:|-----:|-----:|------:|:-----|
+|id            |         0|             1| 47.84| 27.79|  1.00| 24.00| 47.50| 71.00| 102.00|▇▇▇▇▅ |
+|x             |         0|             1| 54.52| 33.79|  0.00| 25.00| 55.00| 80.00| 120.00|▇▆▇▅▅ |
+|y             |         0|             1| 38.14| 27.46|  0.00| 20.00| 30.00| 60.00| 100.00|▇▆▂▃▂ |
+|fco2          |         0|             1|  4.39|  1.26|  2.01|  3.54|  4.23|  5.03|  10.36|▅▇▂▁▁ |
+|ts            |         0|             1| 24.66|  0.58| 23.60| 24.26| 24.55| 24.95|  27.01|▅▇▃▁▁ |
+|us            |         0|             1| 15.57|  5.68|  4.26| 10.39| 13.78| 21.06|  24.31|▁▇▁▂▆ |
+|mo            |         0|             1| 30.33|  5.00| 15.00| 27.00| 30.00| 33.00|  45.00|▁▃▇▃▁ |
+|p_h           |         0|             1|  4.15|  0.36|  3.50|  3.90|  4.00|  4.30|   5.70|▅▇▂▁▁ |
+|p_resina      |         0|             1|  4.99|  2.38|  1.00|  3.00|  5.00|  6.00|  17.00|▇▆▂▁▁ |
+|k             |         0|             1|  2.15|  1.41|  0.60|  1.20|  1.70|  2.62|  11.50|▇▂▁▁▁ |
+
+
+
+### 3) Quantos tratamentos temos nesse banco de dados? Ou seja, qual o número de categorias presentes na coluna `tratamento` ?
+
+```
+#&gt; [1] "EU" "SI"
+```
+
+### 4) Filtrar do banco de dados, selecionar somente as observações referentes à área de eucalipto.
+
+
+```
+#&gt; # A tibble: 102 × 11
+#&gt;    tratamento    id     x     y  fco2    ts    us    mo   p_h p_resina     k
+#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1 EU             1     0     0  5.16  24.0 11.7     31   4.4        3   0.8
+#&gt;  2 EU             2    20     0  4.53  24.7  6.96    32   3.8        6   1.9
+#&gt;  3 EU             3    40     0  5.05  24.4  9.71    39   3.7        6   1.4
+#&gt;  4 EU             4    60     0  5.30  24.6  6.73    38   3.9        5   0.9
+#&gt;  5 EU             5    80     0  6.58  24.5  9.39    29   4          4   0.9
+#&gt;  6 EU             6   100     0  5.12  24.5  8.49    31   4          5   0.6
+#&gt;  7 EU             7    10    10 10.4   25.2 10.2     27   3.7        5   1.1
+#&gt;  8 EU             8    15    10  5.04  24.9  9.43    29   3.9        4   0.8
+#&gt;  9 EU             9    20    10  5.27  25.0  5.21    22   3.8        4   0.7
+#&gt; 10 EU            10    25    10  4.77  24.6  9.36    24   3.8        4   0.7
+#&gt; # ℹ 92 more rows
+```
+
+### 5) Apresente o gradeado amostral.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+Observe a disposição dos pontos amostrais.
+
+### 6) Mapeie a emissão de CO~2~ pelo tamanho e a cor dos marcadores de pontos.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+### 7) Realize a estatística descritiva dos dados, contendo, `N, Média, Mediana, Mínimo, Máximo, Variância, Desvio Padrão, Assimetria, Curtose e Coeficiente de Variação`.
+
+
+```
+#&gt; # A tibble: 1 × 10
+#&gt;       N Media Mediana Menor Maior Variancia Desvio_Padrao Assimetria  Curtose
+#&gt;   &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1   102  31.3      31    15    45      34.7          5.89    -0.0528 -0.00545
+#&gt; # ℹ 1 more variable: CV &lt;dbl&gt;
+```
+
+### 8) Crie uma função para a estatística descritiva e aplique-a a todas as variáveis de interesse no banco de dados por meio das funções `summarise` e `across`.
+
+
+```
+#&gt; # A tibble: 4 × 7
+#&gt;     fco2      ts     us     mo     p_h p_resina       k
+#&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 102    102     102    102    102       102    102    
+#&gt; 2   4.65  24.4    10.6   31.3    4.29      6.07   1.33 
+#&gt; 3   1.92   0.100   4.45  34.7    0.190     6.10   0.207
+#&gt; 4   1.39   0.316   2.11   5.89   0.436     2.47   0.455
+```
+
+## Premissas ou pressupostos da análise geoestatística.
+
+A análise geoestatística é baseada na teoria das **variáveis regionalizadas**, que é uma função numérica com distribuição espacial, que varia de um ponto a outro com continuidade aparente, mas cujas variações não podem ser representadas por uma função matemática simples (MATHERON, 1963). 
+
+Uma variável regionalizada é uma variável aleatória que assume diferentes valores, de acordo com a sua posição na área de estudo.
+
+Se todos os valores de uma variável regionalizada forem considerados em todos os pontos dentro de uma área amostral, a variável regionalizada é apenas uma de infinitas variáveis aleatórias. 
+
+Esse conjunto é chamado de **função aleatória (FA)** e é simbolizado por `\(Z(x_i)\)`. Na prática, quando retiramos uma amostra de solo em um local com coordenadas definidas, temos apenas uma única realização da função aleatória (FA). 
+
+Para estimar valores em locais não amostrados, deve-se introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
+
+Em resumo, temos que os métodos geoestatísticos são ótimos quando os dados são:
+	
+&gt; **normalmente distribuídos** e estacionários (média e variância não variam significativamente no espaço).
+
+Desvios significativos da normalidade e da estacionariedade podem causar problemas, portanto é sempre importante começar a análise estudando o histograma ou algum gráfico similar para checar a normalidade e o mapa dos valores no espaço para checar a ocorrência de tendências significativas. 
+
+
+### 9) Crie o histograma da variável `mo`. Adicione os valores de `média`, `mediana`, `primeiro` e `terceiro quartil` no histograma na forma de linhas verticais.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+### 10) Crie o gráfico Quantil-Quantil (QQ-plot) para auxiliar a interpretação da normalidade.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+### 11) Realize o teste de normalidade dos dados para `mo`.
+
+```
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  pull(filter(dados_geo, tratamento == "EU"), mo)
+#&gt; W = 0.99057, p-value = 0.698
+```
+
+### 12) Verifique a presença de tendência nos dados em função das coordenadas `x` e `y`.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+### 13) Realize a análise de regressão linear entre fco2 e as coordenadas x e y.
+
+```
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mo ~ x, data = filter(dados_geo, tratamento == "EU"))
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -15.5373  -3.3062  -0.6907   4.1744  14.7191 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept) 30.02464    1.17135  25.632   &lt;2e-16 ***
+#&gt; x            0.02563    0.02021   1.268    0.208    
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 5.876 on 100 degrees of freedom
+#&gt; Multiple R-squared:  0.01582,	Adjusted R-squared:  0.005981 
+#&gt; F-statistic: 1.608 on 1 and 100 DF,  p-value: 0.2078
+```
+
+
+
+```
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mo ~ y, data = filter(dados_geo, tratamento == "EU"))
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -18.8944  -3.2225  -0.3291   3.6546  13.6790 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept) 28.81281    1.06900  26.953  &lt; 2e-16 ***
+#&gt; y            0.05082    0.01843   2.757  0.00694 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 5.71 on 100 degrees of freedom
+#&gt; Multiple R-squared:  0.07062,	Adjusted R-squared:  0.06133 
+#&gt; F-statistic: 7.599 on 1 and 100 DF,  p-value: 0.006944
+```
+
+## Medidas da dispersão conjunta de duas variáveis X e Y
+
+As medidas de dispersão conjunta de duas variáveis, como X e Y, referem-se à extensão em que os valores dessas variáveis se afastam de seus valores médios simultaneamente. Algumas medidas comuns incluem a covariância e a correlação.
+
+###  Covariância
+
+A covariância `\((Cov)\)` indica a direção da relação linear entre duas variáveis. Se for positiva, sugere uma relação positiva (quando uma variável aumenta, a outra também tende a aumentar); se for negativa, indica uma relação negativa (uma variável aumenta enquanto a outra diminui).
+
+
+Onde `\(X_i\)` e `\(Y_i\)` são os valores individuais das variáveis `\(X\)` e `\(Y\)`, `\(\bar{X}\)` e `\(\bar{Y}\)` são as médias de `\(X\)` e `\(Y\)`, e `\(n\)` é o número de observações.
+
+$$
+Cov(X,Y) = \frac{1}{n}\sum\limits_{i=1}^n(X_i - \bar{X})(Y_i - \bar{Y})
+$$
+
+### Correlação
+
+A correlação `\((r)\)` normaliza a covariância para estar entre `\(-1\)` e `\(1\)`, facilitando a interpretação. Um valor próximo de `\(1\)` indica uma forte relação positiva, `\(-1\)` indica uma forte relação negativa, e `\(0\)` indica ausência de relação linear.
+
+$$
+r=\frac{\sum\limits_{i=1}^n(X_i - \bar{X})(Y_i - \bar{Y})}{\sqrt{\sum\limits_{i=1}^n(X_i - \bar{X})^2\sum\limits_{i=1}^n(Y_i - \bar{Y})^2}}
+$$
+
+
+### 14) Crie a matriz de correlação entre todas as variáveis numéricas do banco de dados.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+## Definições em geoestatística
+
+&gt; Geoestatística lida com dados autocorrelacionados espacialmente.
+
+
+&gt; Autocorrelação: correlação entre elementos de uma série  com outros elementos da mesma série separados por uma  determinada distância. (Oxford American Dictionary)
+
+Covariância e a correlação são medidas de similaridade entre duas variáveis. Para estender este conceito para medidas de similaridade espacial, considere um gráfico de dispersão em que os pares de dados representam medidas da mesma variável separadas por uma distância `\(h\)` uma da outra. 
+
+Esta distância é geralmente denominada de `lag`, como usado nas series temporais.
+
+
+```
+#&gt; Rows: 302
+#&gt; Columns: 7
+#&gt; $ amostra   &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…
+#&gt; $ transecto &lt;chr&gt; "I", "I", "I", "I", "I", "I", "I", "I", "I", "I", "I", "I", …
+#&gt; $ x         &lt;int&gt; 0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600…
+#&gt; $ y         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+#&gt; $ arg       &lt;int&gt; 57, 58, 64, 65, 66, 70, 71, 72, 73, 72, 70, 64, 69, 69, 67, …
+#&gt; $ silte     &lt;int&gt; 13, 13, 16, 16, 14, 15, 17, 18, 19, 20, 19, 21, 19, 18, 21, …
+#&gt; $ areia     &lt;int&gt; 30, 29, 20, 19, 20, 15, 12, 10, 8, 8, 11, 15, 12, 13, 12, 12…
+```
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+![](img/img-25.png)
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+![](img/img-26.png)
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+&gt; "A dispersão dos pontos em torno da linha de 45º, aumenta com o aumento da distância de separação entre os pontos. Esta dispersão reflete a variabilidade entre esses valores. Reflete a dissimilaridade dos dados para as distâncias h". 
+
+### No mapeamento em duas dimensões
+
+![](img/img-07.png)
+
+
+## O semivariograma experimental (variograma experimental)
+
+Ao contrário das funções de covariância e correlação, as quais medem a similaridade, o semivariograma experimental `\(\gamma(h)\)` mede dissimilaridade média entre dados separados por um vetor `\(h\)`, ou seja,
+
+$$
+\gamma(h) = \frac{1}{2N(h)} \sum \limits_{i=1}^{N(h)}\left[ z(x_i) -z(x_i + h)\right]^2
+$$
+
+Sendo `\(z(x_i)\)` e `\(z(x_i + h)\)` os valores de cauda e da cabeça, respectivamente e `\(N(h)\)` o número de pares de pontos separados pela distância `\(h\)`.
+
+### 15) Vamos construir um semivariograma experimental:
+
+#### 15.1) Extraia os vetores `x`, `y` e `z`.
+
+
+
+#### 15.2) Cosntrua as matrizes de distância e de valor de gamma.
+
+
+
+
+#### 15.3) Calcule a matriz de distância `\(D\)` entre todos os pontos amostrais e a matriz de valores de gamma `\(\gamma\)`. Lembrando que
+
+`$$D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}$$`
+e
+
+`$$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$`
+
+, respectivamente:
+
+
+
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+recomenda-se um núemro de pares de ponto em uma dada distância de separação `\(h\)` sempre maior que `\(30\)`.
+
+
+#### 15.4) Calcule `\(h\)`, `\(N(h)\)` e `\(\gamma(h)\)`.
+
+
+
+#### 15.5) Construa o semivariograma experimental `\(h\)` vs `\(\gamma(h)\)`.
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+O gráfico de acima é denominado **semivariograma experimental**, o qual exibe um comportamento puramente aleatório ou sistemático que pode ser descrito por modelos matemáticos teóricos (linear, esférico, exponencial, gaussiano e lei de potência).
+
+
+
+## Ajuste de modelos matemáticos ao semivariograma experimental
+
+O gráfico do semivariograma experimental, `\(\hat{\gamma}(h)\)`, é formado por uma série de valores, sobre os quais se objetiva ajustar uma função. É importante que o modelo ajustado represente a tendência de `\(\hat{\gamma}(h)\)` em relação a `\(h\)`. 
+
+O procedimento de ajuste não é direto e automático, como no caso de uma regressão, por exemplo, mas sim interativo, pois nesse processo faz-se um primeiro ajuste e verifica-se a adequação do modelo teórico. Dependendo do ajuste obtido, pode-se ou não redefinir o modelo, até obter um que seja considerado satisfatório.
+
+
+Os principais modelos a serem ajustados são:
+
+#### a) Efeito Pepita:
+
+`$$\begin{cases}
+\hat{\gamma}(h) = 0 \text{ se }  h=0 \\
+\hat{\gamma}(h) = Cte \text{ caso contrário }
+\end{cases}$$`
+
+![](img/img-15.png)
+Semivariograma chamado de efeito pepita puro
+
+#### b) Modelo exponencial:
+
+`$$\hat{\gamma}(h) = b(h)^c \text{ com } 0 &lt; c &lt; 2 \text{ e } h \geq 0$$`
+
+
+![](img/img-16.png)
+
+#### c) Modelo exponencial:
+
+`$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp\left({-3 \frac{h}{a}}\right) \right], h &gt; 0$$`
+
+#### d) Modelo esférico:
+
+`$$\begin{cases}
+\hat{\gamma}(h) = C_0 + C_1 \left[exp\left(\frac{3}{2}(\frac{h}{a})-\frac{1}{2}(\frac{h}{a})^3\right)\right], 0 \leq h \leq a \\
+\hat{\gamma}(h) = C_0 + C_1, h&gt;a
+\end{cases}$$`
+
+#### e) Modelo Gaussiano:
+
+`$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h &gt; 0$$`
+O modelo esférico alcança o valor do patamar `\((C_0+C_1)\)` no valor de alcance `\((a)\)` especificado. Os modelos exponencial e gaussiano  se aproximam do patamar assintoticamente, com  a representando o alcance prático, ou seja, a distância na qual a semivariância alcança `\(95\%\)` do valor do patamar.
+
+
+![](img/img-17.png)
+
+
+## Interpretação dos parâmetros
+
+![](img/img-08.png)
+
+Para variáveis que apresentam dependência espacial, espera-se que os valores de `\(Z(x_i) – Z(x_i + h)\)` aumentem com a distância `\(h\)` até determinada distância, a partir da qual os valores estabilizam.
+
+O valor de semivariância, na qual ocorre a estabilização do semivariograma, é denominado de **patamar (sill)**, representado pelo símbolo `\(C_0 + C_1\)`, sendo aproximadamente igual ao valor da estimativa da variância dos dados analisados.
+
+
+A distância `\(h\)` na qual ocorre a estabilização do semivariograma é denominada de **alcance (range)**, simbolizado por `\(a\)`, e define o limite da dependência espacial (autocorrelação). Na prática, pontos cuja distância entre eles **seja maior** que o valor de `\(a\)`, não apresentam autocorrelação espacial, ou seja, são aleatórios.
+
+O **efeito pepita (nugget effect)**, representado pelo símbolo `\(C_0\)`, é o valor de semivariância encontrado no intercepto do modelo ajustado com o eixo `\(Y\)`. Teoricamente, este valor deve ser zero para uma distância de separação `\((h)\)` igual a zero; entretanto, **erros de amostragem** e a **variabilidade na pequena** escala podem causar desvio do zero para esse parâmetro. Portanto, o efeito pepita representa a **quantidade de variância não explicada** ou modelada como correlação espacial.
+
+O valor `\(C_1\)` representa a estrutura de variabilidade espacial dos dados.
+
+
+## Interpretação dos modelos
+
+**Modelo Exponencial** - descreve uma `\(FA\)` que é bem errática à pequenas distâncias, e a sua correspondente realização apresentada na figura a seguir, evidencia considerável variabilidade na pequena escala.
+
+![](img/img-09.png)
+
+**Modelos Esférico** - descreve uma `\(FA\)` que é menos errática em pequenas distâncias, e sua correspondente realização pode ser verificada abaixo.
+  
+![](img/img-10.png)
+
+
+**Modelo Gaussiano** descreve uma `\(FA\)` que é extremamente contínua, o seu semivariograma é tangencial ao eixo x na origem, e cresce suavemente. A sua correspondente realização, figura abaixo é suave e levemente ondulada.
+
+![](img/img-11.png)
+
+### 16) Utilizando as funções `coordinates()` e `variogram()` dos pacotes `{sp}` e `{gstat}`, construa o semivariograma experimental `\(h\)` vs `\(\gamma(h)\)`, não esqueça de adicionar o número de pares de pontos de cada valor estimado de semivariância para futuras inspeções.
+
+### 17) Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma experimental anteriormente apresentado. Utilize as funções `fit.variogram`,  `vgm` e ` variogramLine`, pertencentes ao pacote `{gstat}`.
+
+
+
+```
+#&gt; [1] "tbl_df"     "tbl"        "data.frame"
+#&gt;   coordinates     z
+#&gt; 1      (0, 0) 5.164
+#&gt; 2     (20, 0) 4.528
+#&gt; 3     (40, 0) 5.048
+#&gt; 4     (60, 0) 5.298
+#&gt; 5     (80, 0) 6.576
+#&gt; 6    (100, 0) 5.124
+#&gt; [1] "SpatialPointsDataFrame"
+#&gt; attr(,"package")
+#&gt; [1] "sp"
+#&gt; [1] "S4"
+```
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+#Modelagem - Modelo Esférico
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-32-2.png)&lt;!-- --&gt;
+
+## Modelagem - Modelo Exponencial (casa)
+
+## Modelagem - Modelo Gaussiano (casa)
+
+### 18) Extraia os parâmetros dos modelos ajustados e adicione-os como uma anotação no semivariograma.
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+
+
+
+
+## Resumo do realizado até aqui
+
+A ideia marcante da geoestatística é bem simples. Ela consiste nos seguintes passos:
+
+### 1º Passo 
+
+Defina uma área/local `\(A\)`, considerada homogênea o suficiente para a garantir a interpolação dentro dela, ou seja,
+
+![](img/img-12.png)
+
+### 2º Passo 
+
+Examine todos os dados medidos dentro de `\(A\)` para calcular as características- `\(h\)` da variabilidade espacial, isto é, calcule os valores do semivariograma experimental.
+
+![](img/img-13.png)
+
+### 3º Passo 
+
+Modele o semivariograma experimental com uma função **avaliável** para todos os vetores de distância `\(h\)`.
+
+![](img/img-14.png)
+
+### Considerações finais sobre o semivariograma
+
+Os passos mais importantes e, por isto mesmo, os que mais trazem conseqüências em qualquer estudo geoestatístico são:
+
+#### Decisão de média ou estacionaridade
+
+A decisão de estacionariedade está implícita em todas as estatísticas, ela não é particular da abordagem geoestatística. Esta decisão permite definir um conjunto de dados (área A) sobre os quais as médias experimentais e proporções serão calculadas e é assumido representativa da população como um todo, não de qualquer particular locação individual `\((x \in A)\)`. 
+
+#### Hipótese intrinseca de Matheron (1965)
+
+A hipótese intrínseca assume que o incremento
+
+$$
+Z(x+h) - Z(x)
+$$
+
+tem média zero, ou seja,
+
+$$
+E[Z(x+h) - Z(x)] = 0
+$$
+
+e uma variância finita que não depende do local `\(x\)`, 
+
+
+$$
+Var[Z(x+h) - Z(x)] = E[Z(x+h) - Z(x)]^2 = 2\gamma(h)
+$$
+
+#### Direções na geoestatística
+
+As convenções direcionais usadas na geoestatística são mostradas na Figura abaixo
+
+![](img/img-18.png)
+
+**MODELO ISOTRÓPICO** - Semivariograma só depende da distância `\(h\)`. Um único modelo modela a variabilidade em todas as direções. 
+
+![](img/img-19.png)
+
+
+**MODELO ANISOTRÓPICO** – A modelo aplicado ao semivariograma experimental depende da distância de separação e da direção.
+
+![](img/img-20.png)
+
+O variograma ao longo da direção 30º, por exemplo, de um canal de sedimentação, apresentará menor variabilidade do que na direção 120º, perpendicular à continuidade, correspondentemente, é observado maior correlação na direção da sedimentação. 
+
+![](img/img-21.png)
+
+
+## 4º Passo - Krigagem Ordinária
+
+Estimativa em locais não amostrados
+
+Use este modelo `\(\hat{\gamma}(h)\)`, ou o modelo de covariância `\(C(h)\)`, para a tradicional técnica de regressão, de krigagem.
+
+![](img/img-22.png)
+
+#### Resumidamente: Passos da modelagem da variabilidade espacial
+
+![](img/img-00.png)
+
+Conhecido o semivariograma, e havendo dependência espacial entre as amostras pode-se estimar valores da propriedade `\(Z\)` em qualquer ponto  do campo de estudo, sem tendência e com variância mínima.  O método de estimação é denominado de **KRIGAGEM**, nome dado por MATHERON (1963) em homenagem ao engenheiro de minas sul-africano KRIGE.
+
+### ESTIMAÇÃO LOCAL: colocação do problema
+
+![](img/img-23.png)
+### Estimação Local: Krigagem
+
+
+$$
+\hat{Z}(X_0) = \lambda_1Z(X_1) + \lambda_2Z(X_2)+ \cdots + \lambda_kZ(X_k) = \sum \limits_{i = 1}^k \lambda_iZ(X_i)
+$$
+
+Os pesos são escolhidos de forma que a estimativa `\(\hat{Z}(X_0)\)` seja **não viciada** e a variância do erro `\(\sigma_e^2\)` da estimativa seja menor que qualquer outra combinação linear dos valores observados, ou seja:
+
+$$
+E[\hat{Z}(X_0) - Z(X_0)] = 0 \text{ e } \\
+\sigma^2_e = Var[\hat{Z}(X_0) - Z(X_0)] = E[\hat{Z}(X_0) - Z(X_0)] \text{ seja mínima}
+$$
+
+Trabalhando algebricamente estas duas expressões, chegamos às expressões que forma o sistema de krigagem, que pode ser esrito em função do semivariograma `\(\gamma(h)\)`, sabendo-se que `\(\gamma(h) = C(0) - C(h)\)`
+
+$$
+\begin{cases}
+\sum \limits_i \lambda_i(x_i,x_j) - \mu = \gamma(x_i,x_0) i = 1,2, \cdots, N \\
+\sum \limits_i \lambda_i = 1
+\end{cases}
+$$
+
+E a variância da estimação fica:
+
+$$
+\sigma^2_{\hat{Z}(X_0)} = \sum \limits_i^N \lambda_i\gamma(X_i,X_0) + \mu
+$$
+
+Sistema de krigagem na notação matricial.
+
+
+**Matriz de semivariância entre as amostras**
+
+`$$[\gamma]=\begin{bmatrix}
+\gamma(X_1,X_1) &amp; \gamma(X_1,X_2) &amp; \cdots &amp; \gamma(X_1,X_N) &amp; 1 \\
+\gamma(X_2,X_1) &amp; \gamma(X_2,X_2) &amp;  &amp;\gamma(X_2,X_N) &amp; 1 \\
+\cdots &amp; &amp; \ddots &amp; \cdots &amp; 1\\
+\gamma(X_N,X_1) &amp; \gamma(X_N,X_2) &amp; \cdots &amp; \gamma(X_N,X_N) &amp; 1 \\
+1 &amp; 1 &amp; 1 &amp; 1 &amp;0 \\
+\end{bmatrix}$$`
+
+**Matriz de semivariância entre as amostras e o ponto a estimar**
+
+`$$[b]=\begin{bmatrix}
+\gamma(X_1,X_0) \\
+\gamma(X_2,X_0) \\
+\vdots \\
+\gamma(X_N,X_0) \\
+1
+\end{bmatrix}$$`
+
+**Matriz de ponderadores**
+
+`$$[\lambda]=\begin{bmatrix}
+\lambda_1 \\
+\lambda_2    \\
+\vdots \\
+\lambda_N \\
+\mu
+\end{bmatrix}$$`
+
+a Relação entre os sistema é escrita como:
+
+$$
+[\gamma][\lambda]=[b] \text{ ou seja: } \\
+$$
+
+$$
+\begin{bmatrix}
+\gamma(X_1,X_1) &amp; \gamma(X_1,X_2) &amp; \cdots &amp; \gamma(X_1,X_N) &amp; 1 \\
+\gamma(X_2,X_1) &amp; \gamma(X_2,X_2) &amp;  &amp;\gamma(X_2,X_N) &amp; 1 \\
+\cdots &amp; &amp; \ddots &amp; \cdots &amp; 1\\
+\gamma(X_N,X_1) &amp; \gamma(X_N,X_2) &amp; \cdots &amp; \gamma(X_N,X_N) &amp; 1 \\
+1 &amp; 1 &amp; 1 &amp; 1 &amp;0 \\
+\end{bmatrix} \begin{bmatrix}
+\lambda_1 \\
+\lambda_2    \\
+\cdots \\
+\lambda_N \\
+\mu
+\end{bmatrix}= \begin{bmatrix}
+\gamma(X_1,X_0) \\
+\gamma(X_2,X_0) \\
+\cdots \\
+\gamma(X_N,X_0) \\
+1
+\end{bmatrix}$$`
+
+
+Então, 
+
+`$$[\lambda] = [\gamma]^{-1}[b]$$`
+
+cuja solunção única é 
+`$$\hat{Z}(X_0) = \sum \limits_i^N \hat{\lambda}_iZ(X_i)$$` 
+
+e a expressão da variância da forma matricial fica:
+
+$$
+\sigma_e^2=[\gamma]^t[b]
+$$
+
+
+
+![](img/img-00.png)
+
+### 19) Crie a região de adensamento, ou seja, um novo arquivo contendo a posição geográfica (pares de coordenadas) onde será realizada a estimativa via krigagem ordinária.
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-34-2.png)&lt;!-- --&gt;
+
+
+### 20) Utilizando o algorítmo da KO, vamos estimar o atributo nos locais não amostrados (gradeado adensado).
+
+
+```
+#&gt; [using ordinary kriging]
+```
+
+
+### 21) Apresente os padrões espaciais (mapa de ko) e o mapa da estimativa do erro.
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-36-2.png)&lt;!-- --&gt;
+
+## REFERÊNCIAS
+
+GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for incorporating auxiliary information in the prediction of spatial variables. **J. Agric., Biol. Environ. Statis.**, 1: 17-39.
+
+GOOVAERTS, P. **Geostatistics for natural resources evaluation**. New York: Oxford University Press, p. 483, 1997.
+
+ISAAKS, E. H.; SRIVASTAVA, R. M. **Applied geostatistics**. Nova York: Oxford University Press, 1989. 561 p.
+
+JOURNEL, A.G. **Fundamentals of geostatistics in five lessons**. Short Course in Geology: Volume 8. American Geophysical Union, Washington, p. 1 – 40, 1989.
+
+MATHERON G. Principles of geostatistics. **Economic Geology**, 58, 1963, 1246-1266.
+
+OLIVEIRA, C. F. **Variabilidade espacial da emissão de CO~2~ e estoque de carbono do solo em áreas de eucalipto e sistema silvipastoril**. Dissertação de Mestrado, Agronomia, UNESP-FEIS, 2018.
+
+VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do solo**. In: NOVAIS, R.F.; ALVAREZ, V. H.; SEHAFFER, C. E. G. R. (Ed). Tópicos em ciência do solo. Viçosa: Sociedade Brasileira de Ciência do Solo, 2000, v.1, p. 1 – 53. 
+
+WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**. San Francisco: John Wiley &amp; Sons, p. 315, 2009.
+
+## Agradecimentos
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
