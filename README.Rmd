@@ -1,5 +1,10 @@
 ---
-output: github_document
+title: "Sequestro de Carbono no Solo: Múltiplas Abordagens de Avaliação"
+subtitle: "Introdução à Geoestatística: Conceitos e aplicações na amostragem de atributos do solo"
+author: "Alan Rodrigo Panosso"
+date: "05/12/2024"
+output:
+  html_document: default
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,21 +19,42 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Cursos 02 - Introdução à Geoestatística    
-## Ministrante: Prof. Alan Rodrigo Panosso 
-## Data: 11/01/2024  
 
-![](img/img-00.png)
 
-## Motivação
+## INTRODUÇÃO
+
+### Motivação
 
 A Geoestatística é uma ferramenta na análise espacial de dados, desempenhando um importante papel na agricultura moderna. Ela combina princípios estatísticos com informações geográficas para fornecer uma compreensão mais profunda da variabilidade espacial de várias variáveis ligadas ao solo, às plantas e mesmo à atmosfera. 
 
 É definida como um ramo da estatística aplicada que lida com a análise e interpretação de dados espaciais. Ela permite a modelagem da variabilidade espacial de fenômenos, descrevendo padrões espaciais, correlações e distribuições geográficas. No contexto agronômico, é uma ferramenta para compreender a heterogeneidade do solo e outros fatores que influenciam nos mais diversos fenômenos associados.
 
-O objetivo deste curso é capacitar os alunos a utilizar os princípios da Geoestatística para analisar e interpretar dados espaciais. Ao final do curso, os participantes serão capazes de aplicar métodos geoestatísticos para mapear variáveis do solo, identificar padrões de distribuição espacial e tomar decisões informadas sobre práticas agrícolas.
+O objetivo desta palestra/curso é iniciar os estudos a respeito dos princípios básicos da Geoestatística, focada na análise e interpretação de interpretar dados espaciais. Ao final do curso, os participantes serão capazes de aplicar métodos geoestatísticos para mapear variáveis do solo, identificar padrões de distribuição espacial e tomar decisões informadas sobre práticas agrícolas.
 
-## Introdução
+Os métodos da estatística clássica são muito utilizados em Ciências da Terra, principalmente em Agronomia:
+
+
+### Os procedimentos gerais utilizados na estatística clássica são: 
+
+  + Selecionar um local típico ou representativo;
+
+  + Retirar amostras ao acaso para evitar  tendências;
+
+  + Evitar locais espacialmente variáveis para evitar erros;
+
+  + Variabilidade é ruim;
+
+  + Variabilidade é erro;
+
+  + Conduzir o experimento num local típico que  represente um solo particular; etc.
+
+### As Hipóteses básicas nas quais a maioria dos métodos da estatística clássica se baseiam são:
+
+  + Assumir uma distribuição de frequência;
+
+  + Erros de observações têm média zero;
+
+  + Os erros são independentes.
 
 Considere os dois conjuntos de dados $A$ e $B$ e suas respectivas estatísticas básicas.
 
@@ -59,6 +85,10 @@ Comparação de seus respectivos gráficos de contornos (padrões espaciais).
   * Estas diferenças podem ter um impacto significativo no delineamento amostral, na caracterização do local e na predição espacial em geral.
 
   > **Portanto, não é  surpresa que as estatísticas comuns falhem em reconhecer as diferenças da variável respostas dos dois exemplos de conjuntos de dados, isso porque a estatística descritiva e os histogramas não incorporam a localização espacial dos dados em seus cálculos**.  
+
+
+A maioria das propriedades da superfície da Terra, incluindo as do Solo, variam continuamente no espaço. Como consequência, os valores em locais mais próximos no solo são mais similares dos pontos que estão mais distantes. Eles dependem uns dos outros no sentido estatístico.  Então as observações não podem ser  consideradas independentes, e um tratamento estatístico (WEBSTER  &  OLIVER 1990). É mais prático e realístico assumir esta propriedade, denominada de dependência espacial, dado que os parâmetros de solo envolvem o reconhecimento da correlação. Quando se analisa propriedades de solo é preciso aprender a tirar proveito da variabilidade espacial ao invés de ignora-la.
+
 
 ## Definição da Geoestatística
 
@@ -912,7 +942,3 @@ VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do solo**. 
 WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**. San Francisco: John Wiley & Sons, p. 315, 2009.
 
 ## Agradecimentos
-
-A todos os participantes e integrantes do grupo de pesquisa.
-
-![](img/img-D01.png)
