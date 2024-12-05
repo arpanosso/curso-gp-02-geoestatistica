@@ -321,21 +321,19 @@ class: center, inverse, middle
 
 ---
 
-### Corrplot
 
 ![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
 
----
-
-### Concluí-se que
 
 &gt; "A dispersão dos pontos em torno da linha de 45º, aumenta com o aumento da distância de separação entre os pontos. Esta dispersão reflete a variabilidade entre esses valores. Reflete a dissimilaridade dos dados para as distâncias h". 
 
 ---
+
 ### No mapeamento em duas dimensões
 
-![](img/img-07.png)
 
+&lt;img src="../img/img-07.png" width="100%" style="display: block; margin: auto;" /&gt;
+---
 
 ## O semivariograma experimental (variograma experimental)
 
@@ -347,45 +345,32 @@ $$
 
 Sendo `\(z(x_i)\)` e `\(z(x_i + h)\)` os valores de cauda e da cabeça, respectivamente e `\(N(h)\)` o número de pares de pontos separados pela distância `\(h\)`.
 
-### 15) Vamos construir um semivariograma experimental:
 
-#### 15.1) Extraia os vetores `x`, `y` e `z`.
+---
+class: inverse
 
-
-
-#### 15.2) Construa as matrizes de distância e de valor de gamma.
-
-
-
-
-#### 15.3) Calcule a matriz de distância `\(D\)` entre todos os pontos amostrais e a matriz de valores de gamma `\(\gamma\)`. Lembrando que
-
-`$$D = \sqrt{(X_2-X_1)^2+(Y_2-Y_1)^2}$$`
-e
-
-`$$\gamma = \left[ z(x_i) -z(x_i + h)\right]^2$$`
-
-, respectivamente:
+&lt;img src="../img/img-35.png" width="70%" style="display: block; margin: auto;" /&gt;
+---
 
 
 
 
 
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
-
-recomenda-se um número de pares de ponto em uma dada distância de separação `\(h\)` sempre maior que `\(30\)`.
-
-
-#### 15.4) Calcule `\(h\)`, `\(N(h)\)` e `\(\gamma(h)\)`.
 
 
 
-#### 15.5) Construa o semivariograma experimental `\(h\)` vs `\(\gamma(h)\)`.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+
+
+
+
+
+
+![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
 
 O gráfico de acima é denominado **semivariograma experimental**, o qual exibe um comportamento puramente aleatório ou sistemático que pode ser descrito por modelos matemáticos teóricos (linear, esférico, exponencial, gaussiano e lei de potência).
 
-
+---
 
 ## Ajuste de modelos matemáticos ao semivariograma experimental
 
@@ -393,6 +378,7 @@ O gráfico do semivariograma experimental, `\(\hat{\gamma}(h)\)`, é formado por
 
 O procedimento de ajuste não é direto e automático, como no caso de uma regressão, por exemplo, mas sim interativo, pois nesse processo faz-se um primeiro ajuste e verifica-se a adequação do modelo teórico. Dependendo do ajuste obtido, pode-se ou não redefinir o modelo, até obter um que seja considerado satisfatório.
 
+---
 
 Os principais modelos a serem ajustados são:
 
@@ -403,15 +389,18 @@ Os principais modelos a serem ajustados são:
 \hat{\gamma}(h) = Cte \text{ caso contrário }
 \end{cases}$$`
 
-![](img/img-15.png)
+![](../img/img-15.png)
 Semivariograma chamado de efeito pepita puro
+
+---
 
 #### b) Modelo exponencial:
 
 `$$\hat{\gamma}(h) = b(h)^c \text{ com } 0 &lt; c &lt; 2 \text{ e } h \geq 0$$`
 
 
-![](img/img-16.png)
+![](../img/img-16.png)
+---
 
 #### c) Modelo exponencial:
 
@@ -429,18 +418,21 @@ Semivariograma chamado de efeito pepita puro
 `$$\hat{\gamma}(h) = C_0 + C_1 \left[1- exp(- \frac{h^2}{a^2}) \right], h &gt; 0$$`
 O modelo esférico alcança o valor do patamar `\((C_0+C_1)\)` no valor de alcance `\((a)\)` especificado. Os modelos exponencial e gaussiano  se aproximam do patamar assintoticamente, com  a representando o alcance prático, ou seja, a distância na qual a semivariância alcança `\(95\%\)` do valor do patamar.
 
+---
+class: center, middle
 
-![](img/img-17.png)
+![](../img/img-17.png)
 
-
+---
 ## Interpretação dos parâmetros
 
-![](img/img-08.png)
+&lt;img src="../img/img-08.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
 
 Para variáveis que apresentam dependência espacial, espera-se que os valores de `\(Z(x_i) – Z(x_i + h)\)` aumentem com a distância `\(h\)` até determinada distância, a partir da qual os valores estabilizam.
 
 O valor de semivariância, na qual ocorre a estabilização do semivariograma, é denominado de **patamar (sill)**, representado pelo símbolo `\(C_0 + C_1\)`, sendo aproximadamente igual ao valor da estimativa da variância dos dados analisados.
-
 
 A distância `\(h\)` na qual ocorre a estabilização do semivariograma é denominada de **alcance (range)**, simbolizado por `\(a\)`, e define o limite da dependência espacial (autocorrelação). Na prática, pontos cuja distância entre eles **seja maior** que o valor de `\(a\)`, não apresentam autocorrelação espacial, ou seja, são aleatórios.
 
@@ -448,60 +440,28 @@ O **efeito pepita (nugget effect)**, representado pelo símbolo `\(C_0\)`, é o 
 
 O valor `\(C_1\)` representa a estrutura de variabilidade espacial dos dados.
 
+---
 
 ## Interpretação dos modelos
 
 **Modelo Exponencial** - descreve uma `\(FA\)` que é bem errática à pequenas distâncias, e a sua correspondente realização apresentada na figura a seguir, evidencia considerável variabilidade na pequena escala.
 
-![](img/img-09.png)
+![](../img/img-09.png)
 
+---
 **Modelos Esférico** - descreve uma `\(FA\)` que é menos errática em pequenas distâncias, e sua correspondente realização pode ser verificada abaixo.
   
-![](img/img-10.png)
+![](../img/img-10.png)
 
+---
 
 **Modelo Gaussiano** descreve uma `\(FA\)` que é extremamente contínua, o seu semivariograma é tangencial ao eixo x na origem, e cresce suavemente. A sua correspondente realização, figura abaixo é suave e levemente ondulada.
 
-![](img/img-11.png)
+![](../img/img-11.png)
 
-### 16) Utilizando as funções `coordinates()` e `variogram()` dos pacotes `{sp}` e `{gstat}`, construa o semivariograma experimental `\(h\)` vs `\(\gamma(h)\)`, não esqueça de adicionar o número de pares de pontos de cada valor estimado de semivariância para futuras inspeções.
+---
 
-### 17) Ajuste os modelos esférico, exponencial e gaussiano ao semivariogrma experimental anteriormente apresentado. Utilize as funções `fit.variogram`,  `vgm` e ` variogramLine`, pertencentes ao pacote `{gstat}`.
-
-
-
-```
-#&gt; [1] "tbl_df"     "tbl"        "data.frame"
-#&gt;   coordinates     z
-#&gt; 1      (0, 0) 5.164
-#&gt; 2     (20, 0) 4.528
-#&gt; 3     (40, 0) 5.048
-#&gt; 4     (60, 0) 5.298
-#&gt; 5     (80, 0) 6.576
-#&gt; 6    (100, 0) 5.124
-#&gt; [1] "SpatialPointsDataFrame"
-#&gt; attr(,"package")
-#&gt; [1] "sp"
-#&gt; [1] "S4"
-```
-
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
-
-#Modelagem - Modelo Esférico
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-25-2.png)&lt;!-- --&gt;
-
-## Modelagem - Modelo Exponencial (casa)
-
-## Modelagem - Modelo Gaussiano (casa)
-
-### 18) Extraia os parâmetros dos modelos ajustados e adicione-os como uma anotação no semivariograma.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
-
-
-
-
-
-## Resumo do realizado até aqui
+### Resumo do realizado até aqui
 
 A ideia marcante da geoestatística é bem simples. Ela consiste nos seguintes passos:
 
@@ -509,31 +469,38 @@ A ideia marcante da geoestatística é bem simples. Ela consiste nos seguintes p
 
 Defina uma área/local `\(A\)`, considerada homogênea o suficiente para a garantir a interpolação dentro dela, ou seja,
 
-![](img/img-12.png)
+![](../img/img-12.png)
+
+---
 
 ### 2º Passo 
 
 Examine todos os dados medidos dentro de `\(A\)` para calcular as características- `\(h\)` da variabilidade espacial, isto é, calcule os valores do semivariograma experimental.
 
-![](img/img-13.png)
+![](../img/img-13.png)
+---
 
 ### 3º Passo 
 
 Modele o semivariograma experimental com uma função **avaliável** para todos os vetores de distância `\(h\)`.
 
-![](img/img-14.png)
+![](../img/img-14.png)
+
+---
 
 ### Considerações finais sobre o semivariograma
 
-Os passos mais importantes e, por isto mesmo, os que mais trazem conseqüências em qualquer estudo geoestatístico são:
+Os passos mais importantes e, por isto mesmo, os que mais trazem consequências em qualquer estudo geoestatístico são:
 
 #### Decisão de média ou estacionaridade
 
 A decisão de estacionariedade está implícita em todas as estatísticas, ela não é particular da abordagem geoestatística. Esta decisão permite definir um conjunto de dados (área A) sobre os quais as médias experimentais e proporções serão calculadas e é assumido representativa da população como um todo, não de qualquer particular locação individual `\((x \in A)\)`. 
 
+---
+
 #### Hipótese intrínseca de Matheron (1965)
 
-A hipótese intrínseca assume que o incremento
+A hipótese intrínseca assume que o incremento,
 
 $$
 Z(x+h) - Z(x)
@@ -552,64 +519,78 @@ $$
 Var[Z(x+h) - Z(x)] = E[Z(x+h) - Z(x)]^2 = 2\gamma(h)
 $$
 
+---
+
 #### Direções na geoestatística
 
 As convenções direcionais usadas na geoestatística são mostradas na Figura abaixo
 
-![](img/img-18.png)
+![](../img/img-18.png)
 
+
+---
 **MODELO ISOTRÓPICO** - Semivariograma só depende da distância `\(h\)`. Um único modelo modela a variabilidade em todas as direções. 
 
-![](img/img-19.png)
+![](../img/img-19.png)
 
+---
 
 **MODELO ANISOTRÓPICO** – O modelo aplicado ao semivariograma experimental depende da distância de separação e da direção.
 
-![](img/img-20.png)
+![](../img/img-20.png)
 
+---
 O variograma ao longo da direção 30º, por exemplo, de um canal de sedimentação, apresentará menor variabilidade do que na direção 120º, perpendicular à continuidade, correspondentemente, é observado maior correlação na direção da sedimentação. 
 
-![](img/img-21.png)
 
+&lt;img src="../img/img-21.png" width="70%" style="display: block; margin: auto;" /&gt;
 
-## 4º Passo - Krigagem Ordinária
+---
+
+## Krigagem Ordinária
 
 Estimativa em locais não amostrados
 
 Use este modelo `\(\hat{\gamma}(h)\)`, ou o modelo de covariância `\(C(h)\)`, para a tradicional técnica de regressão, de krigagem.
 
-![](img/img-22.png)
+![](../img/img-22.png)
+
+---
 
 #### Resumidamente: Passos da modelagem da variabilidade espacial
 
-![](img/img-00.png)
+![](../img/img-00.png)
+
+---
 
 Conhecido o semivariograma, e havendo dependência espacial entre as amostras pode-se estimar valores da propriedade `\(Z\)` em qualquer ponto  do campo de estudo, sem tendência e com variância mínima.  O método de estimação é denominado de **KRIGAGEM**, nome dado por MATHERON (1963) em homenagem ao engenheiro de minas sul-africano KRIGE.
 
-### ESTIMAÇÃO LOCAL: colocação do problema
+#### Estimação local
 
-![](img/img-23.png)
+
+&lt;img src="../img/img-23.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
 ### Estimação Local: Krigagem
 
 
-$$
-\hat{Z}(X_0) = \lambda_1Z(X_1) + \lambda_2Z(X_2)+ \cdots + \lambda_kZ(X_k) = \sum \limits_{i = 1}^k \lambda_iZ(X_i)
-$$
+`$$\hat{Z}(X_0) = \lambda_1Z(X_1) + \lambda_2Z(X_2)+ \cdots + \lambda_kZ(X_k) = \sum \limits_{i = 1}^k \lambda_iZ(X_i)$$`
 
 Os pesos são escolhidos de forma que a estimativa `\(\hat{Z}(X_0)\)` seja **não viciada** e a variância do erro `\(\sigma_e^2\)` da estimativa seja menor que qualquer outra combinação linear dos valores observados, ou seja:
 
-$$
-E[\hat{Z}(X_0) - Z(X_0)] = 0 \text{ e } \\
-\sigma^2_e = Var[\hat{Z}(X_0) - Z(X_0)] = E[\hat{Z}(X_0) - Z(X_0)] \text{ seja mínima}
-$$
+`$$E[\hat{Z}(X_0) - Z(X_0)] = 0 \text{ e } \\
+\sigma^2_e = Var[\hat{Z}(X_0) - Z(X_0)] = E[\hat{Z}(X_0) - Z(X_0)] \text{ seja mínima}$$`
+
+---
 
 Trabalhando algebricamente estas duas expressões, chegamos às expressões que forma o sistema de krigagem, que pode ser escrito em função do semivariograma `\(\gamma(h)\)`, sabendo-se que `\(\gamma(h) = C(0) - C(h)\)`
 
 $$
-\begin{cases}
+`\begin{cases}
 \sum \limits_i \lambda_i(x_i,x_j) - \mu = \gamma(x_i,x_0) i = 1,2, \cdots, N \\
 \sum \limits_i \lambda_i = 1
-\end{cases}
+\end{cases}`
 $$
 
 E a variância da estimação fica:
@@ -618,7 +599,9 @@ $$
 \sigma^2_{\hat{Z}(X_0)} = \sum \limits_i^N \lambda_i\gamma(X_i,X_0) + \mu
 $$
 
-Sistema de krigagem na notação matricial.
+---
+
+### Sistema de krigagem na notação matricial.
 
 
 **Matriz de semivariância entre as amostras**
@@ -641,6 +624,9 @@ Sistema de krigagem na notação matricial.
 1
 \end{bmatrix}$$`
 
+
+---
+
 **Matriz de ponderadores**
 
 `$$[\lambda]=\begin{bmatrix}
@@ -657,8 +643,7 @@ $$
 [\gamma][\lambda]=[b] \text{ ou seja: } \\
 $$
 
-$$
-\begin{bmatrix}
+`$$\begin{bmatrix}
 \gamma(X_1,X_1) &amp; \gamma(X_1,X_2) &amp; \cdots &amp; \gamma(X_1,X_N) &amp; 1 \\
 \gamma(X_2,X_1) &amp; \gamma(X_2,X_2) &amp;  &amp;\gamma(X_2,X_N) &amp; 1 \\
 \cdots &amp; &amp; \ddots &amp; \cdots &amp; 1\\
@@ -678,6 +663,7 @@ $$
 1
 \end{bmatrix}$$`
 
+---
 
 Então, 
 
@@ -691,28 +677,21 @@ e a expressão da variância da forma matricial fica:
 $$
 \sigma_e^2=[\gamma]^t[b]
 $$
+---
 
 
-
-![](img/img-00.png)
-
-### 19) Crie a região de adensamento, ou seja, um novo arquivo contendo a posição geográfica (pares de coordenadas) onde será realizada a estimativa via krigagem ordinária.
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-27-2.png)&lt;!-- --&gt;
+![](../img/img-00.png)
 
 
-### 20) Utilizando o algoritmo da KO, vamos estimar o atributo nos locais não amostrados (gradeado adensado).
+---
+class: center, middle, inverse
 
+# Obrigado
+## Alan Rodrigo Panosso
+### &lt;alan.panosso@unesp.br&gt;
+---
 
-```
-#&gt; [using ordinary kriging]
-```
-
-
-### 21) Apresente os padrões espaciais (mapa de ko) e o mapa da estimativa do erro.
-
-![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;![](aula-geo-SCSMAA-2024_files/figure-html/unnamed-chunk-29-2.png)&lt;!-- --&gt;
-
-## REFERÊNCIAS
+### REFERÊNCIAS
 
 GOTWAY, C.A.; HARTFORD, A.H. 1996. Geostatistical methods for incorporating auxiliary information in the prediction of spatial variables. **J. Agric., Biol. Environ. Statis.**, 1: 17-39.
 
@@ -730,7 +709,7 @@ VIEIRA, S. R. **Geoestatística em estudos de variabilidade espacial do solo**. 
 
 WEBSTER, R., OLIVER, M. **Geostatistics for Environmental Sciences**. San Francisco: John Wiley &amp; Sons, p. 315, 2009.
 
-## Agradecimentos
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
