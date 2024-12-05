@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="Alan Rodrigo Panosso alan.panosso@unesp.br" />
     <meta name="date" content="2024-05-12" />
-    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.27/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
   </head>
@@ -46,9 +46,7 @@ class: center, middle, inverse, title-slide
 
 A Geoestatística é uma ferramenta na análise espacial de dados, desempenhando um importante papel na agricultura moderna. Ela combina princípios estatísticos com informações geográficas para fornecer uma compreensão mais profunda da variabilidade espacial de várias variáveis ligadas ao solo, às plantas e mesmo à atmosfera. 
 
-É definida como um ramo da estatística aplicada que lida com a análise e interpretação de dados espaciais. Ela permite a modelagem da variabilidade espacial de fenômenos, descrevendo padrões espaciais, correlações e distribuições geográficas. No contexto agronômico, é uma ferramenta para compreender a heterogeneidade do solo e outros fatores que influenciam nos mais diversos fenômenos associados.
-
-Os métodos da estatística clássica são muito utilizados em Ciências da Terra, principalmente em Agronomia:
+É definida como um ramo da estatística aplicada que lida com a análise e interpretação de dados espaciais. Ela permite a modelagem da variabilidade espacial de fenômenos, descrevendo padrões espaciais, correlações e distribuições geográficas. No contexto agronômico, é uma ferramenta para compreender a heterogeneidade do solo e outros fatores que influenciam nos mais diversos processos associados.
 
 ---
 
@@ -68,7 +66,9 @@ Os métodos da estatística clássica são muito utilizados em Ciências da Terr
 
 ---
 
-### As Hipóteses básicas nas quais a maioria dos métodos da estatística clássica se baseiam são: 
+### Estatística Clássica 
+
+As hipóteses básicas nas quais a maioria dos métodos da estatística clássica se baseiam são: 
 
   + Assumir uma distribuição de frequência;  
 
@@ -76,7 +76,7 @@ Os métodos da estatística clássica são muito utilizados em Ciências da Terr
 
   + Os erros são independentes.  
 
-Considere os dois conjuntos de dados `\(A\)` e `\(B\)` e suas respectivas estatísticas básicas.
+Como exemplo, considere os dois conjuntos de dados `\(A\)` e `\(B\)` e suas respectivas estatísticas básicas.
 
 Estatística |	A	| B 
 :---| :---: | :---:
@@ -93,8 +93,21 @@ Percentil  90	| `\(125,61\)`	| `\(124,72\)`
 
 De acordo com estas evidências os dois conjuntos de dados são bastante semelhantes.
 
----
 
+Estatística |	A	| B 
+:---| :---: | :---:
+n	| `\(15251\)`	| `\(15251\)`
+média | 	`\(100,0\)`	| `\(100,0\)`
+desvio padrão	| `\(20,0\)`	| `\(20,0\)`
+mediana	| `\(100,35\)`	| `\(100,92\)`
+Percentil 10	| `\(73,89\)`	| `\(73,95\)`
+Percentil  90	| `\(125,61\)`	| `\(124,72\)`
+---
+class: center, middel
+![](../img/img-02a.png)
+
+![](../img/img-02b.png)
+---
 ![](../img/img-02.png)
 
 Comparação de seus respectivos gráficos de contornos (padrões espaciais).
@@ -118,25 +131,34 @@ Comparação de seus respectivos gráficos de contornos (padrões espaciais).
 
 ---
 
-## Definição da Geoestatística
+### Geoestatística 
 
-Podemos entender a geoestatística como estudos de fenômenos que variam no espaço e/ou no tempo, ou seja, é uma coleção de técnicas numéricas, que lidam com a caracterização de atributos espaciais, permitindo a descrição da continuidade espacial de fenômenos naturais e fornece adaptações das técnicas da regressão para o entendimento desta continuidade (ISAAKS; SRIVASTAVA, 1989; GOOVAERTS, 1997). 
+Podemos entender a geoestatística como estudos de fenômenos que variam no espaço e/ou no tempo, ou seja, é uma coleção de técnicas numéricas, que lidam com a caracterização de atributos espaciais, permitindo a descrição da continuidade espacial de fenômenos naturais e fornece adaptações das técnicas da regressão para o entendimento desta continuidade (**ISAAKS; SRIVASTAVA, 1989; GOOVAERTS, 1997**). 
 
-Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas incluindo geofísica, geologia, ciências agronômicas, hidrologia e engenharia ambiental. A parte central da geoestatística é a ideia de que **medidas mais próximas tendem a serem mais parecidas do que valores observados em locais distantes**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (GOTWAY; HARTFORD).
+Embora ela tenha sua origem na mineração, a geoestatística é uma parte básica de muitas disciplinas científicas ligadas às áreas da geofísica, geologia, ciências agronômicas, hidrologia e engenharia ambiental. 
 
-Um conceito chave na Análise Espacial é a dependência espacial, e sua formulação matemática, a autocorrelação espacial. Estas noções partem do que Waldo Tobler chama de a "primeira lei da geografia": 
+A parte central da geoestatística é a ideia de que **medidas obtidas em locais próximos tendem a ser mais semelhantes entre si do que aquelas realizadas em locais distantes.**. A geoestatística fornece métodos para quantificar esta correlação espacial e incorporá-la na estimação e na inferência (**GOTWAY; HARTFORD, 1996**).
+
+Um conceito chave na denominada "Análise Espacial" é a dependência espacial, e sua formulação matemática, a autocorrelação espacial. Estas noções partem do que Waldo R. Tobler chama de a "primeira lei da geografia": 
 
   &gt; **"todas as coisas são parecidas, mas coisas mais próximas se parecem mais que coisas mais distantes"**.
 
 ---
 
-### O variograma 
+### O [semi]variograma 
 
 O variograma (ou semivariograma) é uma estatística descritiva quantitativa que pode ser representada graficamente de tal forma que caracteriza a continuidade espacial de um conjunto de dados.  
 
 ![](../img/img-03.png)
 
 Em outras palavras, a análise variográfica caracteriza a (auto)correlação espacial.
+
+---
+![](../img/img-02.png)
+
+![](../img/img-03.png)
+
+
 
 ---
 
@@ -148,9 +170,9 @@ Estudo de caso desenvolvido em áreas pertencentes à Fazenda de Ensino, Pesquis
 
 ---
 
-As áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de 1970, quando, em 1978, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até 1986. Durante os anos de 1986-1987, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de 1986 e a área de SI foi formada em dezembro de 1987.
+As áreas eram originalmente cobertas por vegetação nativa do Cerrado até a década de `\(1970\)`, quando, em `\(1978\)`, foram desmatadas e passaram a ser usadas para culturas anuais, como milho, soja, algodão e adubos verdes, até `\(1986\)`. Durante os anos de `\(1986-1987\)`, as áreas foram convertidas para os seguintes usos: floresta plantada de eucalipto (EU) e sistema silvipastoril (SI), uma floresta plantada de aroeira-vermelha (*Myracrodruon urundeuva*) em consórcio com capim braquiária (*Brachiaria decumbens*). A área de EU (*Eucalyptus camaldulensis*) foi formada em 26 de abril de `\(1986\)` e a área de SI foi formada em dezembro de `\(1987\)`.
 
-No momento da realização das avaliações de emissão de CO~2~ do solo (FCO2) as áreas já haviam passado por mais de `\(30\)` anos de mudança de conversão. As determinações foram realizadas no período de 03 de fevereiro a 17 de junho de 2017, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
+No momento da realização das avaliações de emissão de `\(CO_2\)` do solo (FCO2) as áreas já haviam passado por mais de `\(30\)` anos de mudança de conversão. As determinações foram realizadas no período de `\(03\)` de fevereiro a `\(17\)` de junho de `\(2017\)`, Na imagem abaixo são apresentados os dias de avaliação e os valores de precipitação (chuva em mm) ocorridas no período. 
 
 ![](../img/img-06.png)
 ---
@@ -209,27 +231,31 @@ Selecione **"Extrair tudo..."** e siga as instruções.
 &lt;img src="../img/img-32.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
-## Análise Exploratória 
+### Análise Exploratória 
 
 Um estudo clássico de geoestatística normalmente começa com uma descrição detalhada da análise exploratória dos dados (mapas espaciais, histogramas). 
 
-Para isso vamos realizas análise descritiva da variável teor de matéria orgânica do solo na área de eucalipto. ([OLIVEIRA, 2018](https://repositorio.unesp.br/bitstreams/a13ca7aa-da94-4701-89aa-2bd2c8b4442d/download) )
+Para isso vamos realizas análise descritiva da variável teor de matéria orgânica do solo na área de eucalipto, dados referentes ao trabalho de mestrado de [OLIVEIRA (2018)](https://repositorio.unesp.br/bitstreams/a13ca7aa-da94-4701-89aa-2bd2c8b4442d/download), denominado:
+
+**"VARIABILIDADE ESPACIAL DA EMISSÃO DE `\(CO_2\)` E ESTOQUE DE CARBONO DO SOLO EM ÁREAS DE EUCALIPTO E SISTEMA SILVIPASTORIL"**
 
 ---
 
-## Premissas ou pressupostos da análise geoestatística.
+### Premissas da análise geoestatística
 
-A análise geoestatística é baseada na teoria das **variáveis regionalizadas**, que é uma função numérica com distribuição espacial, que varia de um ponto a outro com continuidade aparente, mas cujas variações não podem ser representadas por uma função matemática simples (MATHERON, 1963). 
+A análise geoestatística é baseada na teoria das **variáveis regionalizadas**, que é uma função numérica com distribuição espacial, que varia de um ponto a outro com continuidade aparente, mas cujas variações não podem ser representadas por uma função matemática simples (**MATHERON, 1963**). 
 
 Uma variável regionalizada é uma variável aleatória que assume diferentes valores, de acordo com a sua posição na área de estudo.
 
 Se todos os valores de uma variável regionalizada forem considerados em todos os pontos dentro de uma área amostral, a variável regionalizada é apenas uma de infinitas variáveis aleatórias. 
 
-Esse conjunto é chamado de **função aleatória (FA)** e é simbolizado por `\(Z(x_i)\)`. Na prática, quando retiramos uma amostra de solo em local com coordenadas definidas, temos apenas uma única realização da função aleatória (FA). 
+Esse conjunto é chamado de **função aleatória `\((FA)\)`** e é simbolizado por `\(Z(x_i)\)`. Na prática, quando retiramos uma amostra de solo em local com coordenadas definidas, temos apenas uma única realização da `\(FA\)`. 
 
-Para estimar valores em locais não amostrados, deve-se introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (VIEIRA, 2000).
+Para estimar valores em locais não amostrados, deve-se introduzir as restrições de **estacionaridade estatística**. A existência de estacionaridade permite que o experimento possa ser repetido mesmo que as amostras sejam coletadas em pontos diferentes, pois elas pertencem à mesma população, com os mesmos momentos estatísticos (**VIEIRA, 2000**).
 
 ---
+
+### Principais pressupostos
 
 Em resumo, temos que os métodos geoestatísticos são ótimos quando os dados são:
 	

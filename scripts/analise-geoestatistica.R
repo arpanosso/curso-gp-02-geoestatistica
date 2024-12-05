@@ -290,6 +290,5 @@ ko |>
   ggplot(aes(x=x,y=y)) +
   geom_tile(aes(fill= var1.pred)) +
   scale_fill_viridis_c() +
-  labs(title = "FCO2") +
   theme_bw() +
   labs(fill="MO")
